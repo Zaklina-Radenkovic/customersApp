@@ -42,19 +42,16 @@ const Register = () => {
       // console.log(response);
       //   we can destructure user from response
       const { user } = await signInWithGooglePopup();
-      // console.log(user);
+      console.log(user);
       await createUserDocumentFromAuth(user);
-      if (user) {
-        //zasto se stavlja ovde?
-        // before performing an action
-        await wait(500);
-        if (isMounted()) {
-          const returnUrl = router.query.returnUrl || "/";
-          router.push(returnUrl).catch(console.error);
-          toast.success("You are registered!");
-        }
-      } else if (auth.currentUser === user) {
-        toast.error("You are already registered! Continue browsing the App :)");
+
+      //zasto se stavlja ovde?
+      // before performing an action
+      await wait(500);
+      if (isMounted()) {
+        const returnUrl = router.query.returnUrl || "/";
+        router.push(returnUrl).catch(console.error);
+        toast.success("You are registered!");
       }
     } catch (err) {
       toast.error("Something is wrong");

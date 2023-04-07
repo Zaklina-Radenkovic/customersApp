@@ -1,7 +1,7 @@
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-
-// import toast from "react-hot-toast";
+import { signOutUser } from "../lib/firebase";
+import toast from "react-hot-toast";
 import {
   Avatar,
   Box,
@@ -13,7 +13,6 @@ import {
   Typography,
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
-
 import { Cog as CogIcon } from "../icons/cog";
 import { UserCircle as UserCircleIcon } from "../icons/user-circle";
 
@@ -30,6 +29,21 @@ export const AccountPopover = ({
   ...other
 }: AccountPopoverProp) => {
   const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      onClose?.();
+      //@ts-ignore
+      await signOutUser();
+
+      // setUser(null);
+      router.push("/authentication/login").catch(console.error);
+      toast.success("You are signed out");
+    } catch (err) {
+      console.error(err);
+      toast.error("Unable to logout.");
+    }
+  };
 
   return (
     <Popover
@@ -92,7 +106,7 @@ export const AccountPopover = ({
           </MenuItem>
         </NextLink>
         <Divider />
-        <MenuItem>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
           </ListItemIcon>
