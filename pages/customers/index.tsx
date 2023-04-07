@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 
-// import { CustomerListTable } from "../../src/components/dashboard/customer/customer-list-table";
+import { ListTable } from "../../src/components/customer/ListTable";
 // import { useMounted } from "../../src/components/hooks/use-mounted";
 import { Plus as PlusIcon } from "../../src/icons/plus";
 import { Search as SearchIcon } from "../../src/icons/search";
@@ -39,21 +39,16 @@ const sortOptions = [
 ];
 
 //for tabs
-const applyFilters = (
-  customers: Customer[],
-  filters: {
-    query: string;
-  }
-) =>
+const applyFilters = (customers: Customer[], query: string) =>
   customers.filter((customer) => {
-    if (filters.query) {
+    if (query) {
       let queryMatched = false;
       const properties = ["email", "name"];
 
       properties.forEach((property) => {
         if (
           // @ts-ignore
-          customer[property].toLowerCase().includes(filters.query.toLowerCase())
+          customer[property].toLowerCase().includes(query.toLowerCase())
         ) {
           queryMatched = true;
         }
@@ -118,11 +113,7 @@ const CustomerList = () => {
   const [sort, setSort] = useState(sortOptions[0].value);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [filters, setFilters] = useState<{
-    query: string;
-  }>({
-    query: "",
-  });
+  const [query, setQuery] = useState<string>("");
 
   // useEffect(() => {
   //   //calling 'async' fnc inside of useeffect
@@ -152,10 +143,7 @@ const CustomerList = () => {
 
   const handleQueryChange = (event: React.SyntheticEvent<Element, Event>) => {
     event.preventDefault();
-    setFilters((prevState) => ({
-      ...prevState,
-      query: queryRef.current?.value,
-    }));
+    setQuery(queryRef.current?.value);
   };
 
   const handleSortChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,7 +162,7 @@ const CustomerList = () => {
   };
 
   // Usually query is done on backend with indexing solutions
-  const filteredCustomers = applyFilters(customers, filters);
+  const filteredCustomers = applyFilters(customers, query);
   const sortedCustomers = applySort(filteredCustomers, sort);
   const paginatedCustomers = applyPagination(
     sortedCustomers,
@@ -185,7 +173,7 @@ const CustomerList = () => {
   return (
     <>
       <Head>
-        <title>Gym-tastic | Customer List</title>
+        <title>CustomList | Customer List</title>
       </Head>
 
       <Box
@@ -259,14 +247,14 @@ const CustomerList = () => {
                 ))}
               </TextField>
             </Box>
-            {/* <CustomerListTable
+            <ListTable
               customers={paginatedCustomers}
               customersCount={filteredCustomers.length}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               rowsPerPage={rowsPerPage}
               page={page}
-            /> */}
+            />
           </Card>
         </Container>
       </Box>

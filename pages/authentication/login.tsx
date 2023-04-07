@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import * as Yup from "yup";
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useFormik } from "formik";
 import Head from "next/head";
 import {
@@ -14,12 +14,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-// import { wait } from "../../src/utils/wait";
+import { wait } from "../../src/utils/wait";
 import { useRouter } from "next/router";
-// import {
-//   signInWithGooglePopup,
-//   signInAuthUserWithEmailAndPassword,
-// } from "../../src/utils/firebase";
+import {
+  signInWithGooglePopup,
+  signInAuthUserWithEmailAndPassword,
+  auth,
+} from "../../src/lib/firebase";
 // import { UserContext } from "../../src/context/userContext";
 import { useMounted } from "../../src/hooks/use-mounted";
 // import { AppUserContext } from "../../src/context/appUserContext";
@@ -30,18 +31,27 @@ const Login = () => {
   const isMounted = useMounted();
   const router = useRouter();
 
-  // const handleGoogleClick = async () => {
-  //   try {
-  //     await signInWithGooglePopup();
-  //     setIsLogin(true);
-  //     if (isMounted()) {
-  //       const returnUrl = router.query.returnUrl || "/";
-  //       router.push(returnUrl).catch(console.error);
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+  const handleGoogleClick = async () => {
+    try {
+      const { user } = await signInWithGooglePopup();
+
+      // setIsLogin(true);
+      if (auth.currentUser !== user) {
+        await wait(500);
+        if (isMounted()) {
+          const returnUrl = router.query.returnUrl || "/";
+          router.push(returnUrl).catch(console.error);
+          toast.success("You are logged in!");
+        }
+      }
+      if (auth.currentUser === user) {
+        toast.error("You are already logged in! Continue browsing the App :)");
+      }
+    } catch (err) {
+      toast.error("Something is wrong");
+      console.error(err);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -60,45 +70,52 @@ const Login = () => {
       const email = values.email;
       const password = values.password;
       try {
-        // NOTE: Make API request
-        // @ts-ignore
         const { user } = await signInAuthUserWithEmailAndPassword(
           email,
           password
         );
         // setIsLogin(true);
         // console.log(user);
-        // await wait(500);
-        helpers.setStatus({ success: true });
-        helpers.setSubmitting(false);
-        // toast.success("Customer updated!");
-        helpers.resetForm({
-          values: {
-            email: "",
-            password: "",
-          },
-        });
-        // setUser(user);
-        // console.log(user);
-        // @ts-ignore
-        // if (isMounted()) {
-        //   const returnUrl = router.query.returnUrl || "/";
-        //   router.push(returnUrl).catch(console.error);
-        // }
-      } catch (error) {
-        // if (error.code === "auth/user-not-found") {
-        //   toast.error("User not found. Please, check your email");
-        // }
-        // if (error.code === "auth/wrong-password") {
-        //   toast.error("Wrong password");
-        // }
+        if (auth.currentUser !== user) {
+          await wait(500);
+          helpers.setStatus({ success: true });
+          helpers.setSubmitting(false);
+          toast.success("You are logged in!");
+          helpers.resetForm({
+            values: {
+              email: "",
+              password: "",
+            },
+          });
+          // setUser(user);
+          // console.log(user);
+
+          if (isMounted()) {
+            const returnUrl = router.query.returnUrl || "/";
+            router.push(returnUrl).catch(console.error);
+          }
+        }
+        if (auth.currentUser === user) {
+          toast.error(
+            "You are already logged in! Continue browsing the App :)"
+          );
+        }
+      } catch (error: any) {
+        console.log(error);
+        if (error.code === "auth/user-not-found") {
+          toast.error("User not found. Please, check your email");
+        }
+        if (error.code === "auth/wrong-password") {
+          toast.error("Wrong password");
+        }
         console.error(error);
-        // toast.error("Something went wrong!");
-        // if (isMounted()) {
-        //   helpers.setStatus({ success: false });
-        //   helpers.setErrors({ submit: err.message });
-        //   helpers.setSubmitting(false);
-        // }
+        toast.error("Something went wrong!");
+        if (isMounted()) {
+          helpers.setStatus({ success: false });
+          // @ts-ignore
+          helpers.setErrors({ submit: err.message });
+          helpers.setSubmitting(false);
+        }
       }
     },
   });
@@ -146,7 +163,7 @@ const Login = () => {
               <form onSubmit={formik.handleSubmit}>
                 <Button
                   fullWidth
-                  // onClick={handleGoogleClick}
+                  onClick={handleGoogleClick}
                   size="large"
                   variant="outlined"
                 >

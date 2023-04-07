@@ -3,6 +3,7 @@ import Head from "next/head";
 import { ThemeProvider } from "@mui/material/styles";
 import { createTheme } from "../src/theme";
 import CssBaseline from "@mui/material/CssBaseline";
+import { Toaster } from "react-hot-toast";
 import type { AppProps } from "next/app";
 
 import Layout from "../src/components/Layout";
@@ -26,6 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         })}
       >
         <CssBaseline />
+        <Toaster position="top-center" />
         <Layout>
           <Component {...pageProps} />
         </Layout>

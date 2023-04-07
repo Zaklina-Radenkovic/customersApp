@@ -1,7 +1,7 @@
 import { useContext } from "react";
 // import { UserContext } from "../../src/context/userContext";
 import * as Yup from "yup";
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useFormik } from "formik";
 import Head from "next/head";
 import {
@@ -17,46 +17,50 @@ import {
   Typography,
 } from "@mui/material";
 import { wait } from "../../src/utils/wait";
-// import {
-//   createUserDocumentFromAuth,
-//   signInWithGooglePopup,
-//   createAuthUserWithEmailAndPassword,
-// } from "../../src/utils/firebase";
+import {
+  createUserDocumentFromAuth,
+  signInWithGooglePopup,
+  createAuthUserWithEmailAndPassword,
+  auth,
+} from "../../src/lib/firebase";
+import { UserCredential } from "firebase/auth";
+import { User } from "firebase/auth";
 import { useMounted } from "../../src/hooks/use-mounted";
 import { useRouter } from "next/router";
+import { Url } from "next/dist/shared/lib/router/router";
 
 const Register = () => {
   // const { setCurrentUser } = useContext(UserContext);
   //isMounted returns fnc, isMounted() returns true/false
   const isMounted = useMounted();
-
   const router = useRouter();
 
   //whenever we connect to database it is async fnc
-  // const logGoogleUser = async () => {
-  //   // const response = await signInWithGooglePopup();
-  //   // console.log(response);
-  //   //we can destructure user from response
-  //   const { user } = await signInWithGooglePopup();
-  //   await createUserDocumentFromAuth(user);
-  // };
-
-  // const handleGoogleClick = async () => {
-  //   try {
-  //     const { user } = await signInWithGooglePopup();
-
-  //     await createUserDocumentFromAuth(user);
-
-  //zasto se stavlja ovde?
-  // before performing an action
-  //     if (isMounted()) {
-  //       const returnUrl = router.query.returnUrl || "/";
-  //       router.push(returnUrl).catch(console.error);
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+  const handleGoogleClick = async () => {
+    try {
+      // const response = await signInWithGooglePopup();
+      // console.log(response);
+      //   we can destructure user from response
+      const { user } = await signInWithGooglePopup();
+      // console.log(user);
+      await createUserDocumentFromAuth(user);
+      if (user) {
+        //zasto se stavlja ovde?
+        // before performing an action
+        await wait(500);
+        if (isMounted()) {
+          const returnUrl = router.query.returnUrl || "/";
+          router.push(returnUrl).catch(console.error);
+          toast.success("You are registered!");
+        }
+      } else if (auth.currentUser === user) {
+        toast.error("You are already registered! Continue browsing the App :)");
+      }
+    } catch (err) {
+      toast.error("Something is wrong");
+      console.error(err);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -78,31 +82,22 @@ const Register = () => {
       const password = values.password;
       const name = values.displayName;
       try {
-        // NOTE: Make API request
-        // const response = await createAuthUserWithEmailAndPassword(
-        //   email,
-        //   password
-        // );
-        // console.log(response);
-        // Or, we can destructure
-        // @ts-ignore
-        const { user } = await createAuthUserWithEmailAndPassword(
+        const { user }: any = await createAuthUserWithEmailAndPassword(
           email,
           password
         );
         // @ts-ignore
         // setCurrentUser(user);
-        // await createUserDocumentFromAuth(user, { name });
+        await createUserDocumentFromAuth(user, { name });
         // console.log(user);
-
-        // await wait(500);
-        // if (isMounted()) {
-        //   const returnUrl = router.query.returnUrl || "/";
-        //   router.push(returnUrl).catch(console.error);
-        // }
+        await wait(500);
+        if (isMounted()) {
+          const returnUrl = router.query.returnUrl || "/";
+          router.push(returnUrl).catch(console.error);
+        }
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
-        // toast.success("Customer updated!");
+        toast.success("You are registered!");
         helpers.resetForm({
           values: {
             displayName: "",
@@ -110,20 +105,19 @@ const Register = () => {
             password: "",
           },
         });
-      } catch (error) {
-        // if (error.code === "auth/email-already-in-use") {
-        //   toast.error("Cannot create user, email already in use");
-        // }
-        // if (error.code === "auth/invalid-email") {
-        //   toast.error("Cannot create user, invalid email");
-        // }
-        // console.error(error);
-        // if (isMounted()) {
-        //   helpers.setStatus({ success: false });
-        //   // @ts-ignore
-        //   helpers.setErrors({ submit: error.message });
-        //   helpers.setSubmitting(false);
-        // }
+      } catch (error: any) {
+        if (error.code === "auth/email-already-in-use") {
+          toast.error("Cannot create user, email already in use");
+        }
+        if (error.code === "auth/invalid-email") {
+          toast.error("Cannot create user, invalid email");
+        }
+        if (isMounted()) {
+          helpers.setStatus({ success: false });
+          // @ts-ignore
+          helpers.setErrors({ submit: error.message });
+          helpers.setSubmitting(false);
+        }
       }
     },
   });
@@ -241,7 +235,7 @@ const Register = () => {
                       size="large"
                       fullWidth
                       variant="outlined"
-                      // onClick={handleGoogleClick}
+                      onClick={handleGoogleClick}
                       // sx={
                       //   {
                       //     backgroundColor: "common.white",

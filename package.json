@@ -13,10 +13,12 @@
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.14",
+    "firebase": "^9.19.1",
     "formik": "^2.2.9",
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hot-toast": "^2.4.0",
     "simplebar": "^6.2.2",
     "simplebar-react": "^3.2.2",
     "yup": "^1.0.2"
