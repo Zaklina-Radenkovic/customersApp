@@ -15,6 +15,7 @@ import {
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Cog as CogIcon } from "../icons/cog";
 import { UserCircle as UserCircleIcon } from "../icons/user-circle";
+import { useCustomerContext } from "../context/CustomerContext";
 
 type AccountPopoverProp = {
   anchorEl: any;
@@ -29,14 +30,14 @@ export const AccountPopover = ({
   ...other
 }: AccountPopoverProp) => {
   const router = useRouter();
+  const { user, setUser } = useCustomerContext();
 
   const handleLogout = async () => {
     try {
       onClose?.();
-      //@ts-ignore
       await signOutUser();
 
-      // setUser(null);
+      setUser(null);
       router.push("/authentication/login").catch(console.error);
       toast.success("You are signed out");
     } catch (err) {
@@ -67,7 +68,7 @@ export const AccountPopover = ({
         }}
       >
         <Avatar
-          // src={user?.photoURL}
+          src={user?.photoURL}
           sx={{
             height: 40,
             width: 40,
@@ -80,7 +81,7 @@ export const AccountPopover = ({
             ml: 1,
           }}
         >
-          <Typography variant="body1">{/* {user?.name} */}</Typography>
+          <Typography variant="body1"> {user?.name} </Typography>
         </Box>
       </Box>
       <Divider />

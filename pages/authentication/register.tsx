@@ -27,10 +27,11 @@ import { UserCredential } from "firebase/auth";
 import { User } from "firebase/auth";
 import { useMounted } from "../../src/hooks/use-mounted";
 import { useRouter } from "next/router";
-import { Url } from "next/dist/shared/lib/router/router";
+
+import { useUserContext } from "../../src/context/UserContext";
 
 const Register = () => {
-  // const { setCurrentUser } = useContext(UserContext);
+  // const { setUser } = useUserContext();
   //isMounted returns fnc, isMounted() returns true/false
   const isMounted = useMounted();
   const router = useRouter();
@@ -42,7 +43,6 @@ const Register = () => {
       // console.log(response);
       //   we can destructure user from response
       const { user } = await signInWithGooglePopup();
-      console.log(user);
       await createUserDocumentFromAuth(user);
 
       //zasto se stavlja ovde?
@@ -50,6 +50,7 @@ const Register = () => {
       await wait(500);
       if (isMounted()) {
         const returnUrl = router.query.returnUrl || "/";
+        //@ts-ignore
         router.push(returnUrl).catch(console.error);
         toast.success("You are registered!");
       }
@@ -83,13 +84,14 @@ const Register = () => {
           email,
           password
         );
-        // @ts-ignore
-        // setCurrentUser(user);
+
         await createUserDocumentFromAuth(user, { name });
+        // setUser(user);
         // console.log(user);
         await wait(500);
         if (isMounted()) {
           const returnUrl = router.query.returnUrl || "/";
+          //@ts-ignore
           router.push(returnUrl).catch(console.error);
         }
         helpers.setStatus({ success: true });

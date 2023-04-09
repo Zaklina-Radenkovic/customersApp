@@ -23,10 +23,11 @@ import {
 } from "../../src/lib/firebase";
 // import { UserContext } from "../../src/context/userContext";
 import { useMounted } from "../../src/hooks/use-mounted";
+import { useUserContext } from "../../src/context/UserContext";
 // import { AppUserContext } from "../../src/context/appUserContext";
 
 const Login = () => {
-  // const { setCurrentUser, setIsLogin } = useContext(UserContext);
+  const { setUser } = useUserContext();
   // const { setUser, setIsLogin } = useContext(AppUserContext);
   const isMounted = useMounted();
   const router = useRouter();
@@ -36,17 +37,18 @@ const Login = () => {
       const { user } = await signInWithGooglePopup();
 
       // setIsLogin(true);
-      if (auth.currentUser !== user) {
-        await wait(500);
-        if (isMounted()) {
-          const returnUrl = router.query.returnUrl || "/";
-          router.push(returnUrl).catch(console.error);
-          toast.success("You are logged in!");
-        }
+      // if (auth.currentUser !== user) {
+      await wait(500);
+      if (isMounted()) {
+        const returnUrl = router.query.returnUrl || "/";
+        //@ts-ignore
+        router.push(returnUrl).catch(console.error);
+        toast.success("You are logged in!");
       }
-      if (auth.currentUser === user) {
-        toast.error("You are already logged in! Continue browsing the App :)");
-      }
+      // }
+      // if (auth.currentUser === user) {
+      //   toast.error("You are already logged in! Continue browsing the App :)");
+      // }
     } catch (err) {
       toast.error("Something is wrong");
       console.error(err);
@@ -70,36 +72,38 @@ const Login = () => {
       const email = values.email;
       const password = values.password;
       try {
+        //@ts-ignore
         const { user } = await signInAuthUserWithEmailAndPassword(
           email,
           password
         );
         // setIsLogin(true);
-        // console.log(user);
-        if (auth.currentUser !== user) {
-          await wait(500);
-          helpers.setStatus({ success: true });
-          helpers.setSubmitting(false);
-          toast.success("You are logged in!");
-          helpers.resetForm({
-            values: {
-              email: "",
-              password: "",
-            },
-          });
-          // setUser(user);
-          // console.log(user);
 
-          if (isMounted()) {
-            const returnUrl = router.query.returnUrl || "/";
-            router.push(returnUrl).catch(console.error);
-          }
+        // if (auth.currentUser !== user) {
+        await wait(500);
+        helpers.setStatus({ success: true });
+        helpers.setSubmitting(false);
+        helpers.resetForm({
+          values: {
+            email: "",
+            password: "",
+          },
+        });
+        // setUser(user);
+        // console.log(user);
+        toast.success(`You are logged in as ${user?.email}!`);
+
+        if (isMounted()) {
+          const returnUrl = router.query.returnUrl || "/";
+          //@ts-ignore
+          router.push(returnUrl).catch(console.error);
         }
-        if (auth.currentUser === user) {
-          toast.error(
-            "You are already logged in! Continue browsing the App :)"
-          );
-        }
+        // }
+        // if (auth.currentUser === user) {
+        //   toast.error(
+        //     "You are already logged in! Continue browsing the App :)"
+        //   );
+        // }
       } catch (error: any) {
         console.log(error);
         if (error.code === "auth/user-not-found") {

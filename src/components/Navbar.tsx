@@ -8,9 +8,11 @@ import {
   IconButton,
   Toolbar,
 } from "@mui/material";
+import { getInitials } from "../utils/getInitials";
 import { Menu as MenuIcon } from "../icons/menu";
 import { UserCircle as UserCircleIcon } from "../icons/user-circle";
 import { AccountPopover } from "./AccountPopover";
+import { useCustomerContext } from "../context/CustomerContext";
 
 const NavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -31,6 +33,8 @@ const NavbarRoot = styled(AppBar)(({ theme }) => ({
 const AccountButton = () => {
   const [openPopover, setOpenPopover] = useState(false);
   const anchorRef = useRef(null);
+
+  const { user } = useCustomerContext();
 
   const handleOpenPopover = () => {
     setOpenPopover(true);
@@ -57,10 +61,14 @@ const AccountButton = () => {
             height: 40,
             width: 40,
           }}
-          // src={user?.photoURL}
+          src={user?.photoURL || ""}
         >
-          <UserCircleIcon fontSize="small" />
-          {/* {getInitials(user?.name)} */}
+          {/* TODO: when user is sign out how to remove photo */}
+          {user === null ? (
+            <UserCircleIcon fontSize="small" />
+          ) : (
+            getInitials(user?.name)
+          )}
         </Avatar>
       </Box>
       <AccountPopover
