@@ -22,7 +22,7 @@ import {
   getDocs,
   query,
   collection,
-  onSnapshot,
+  updateDoc,
   writeBatch,
 } from "firebase/firestore";
 import { User } from "firebase/auth";
@@ -70,7 +70,8 @@ export const createUserDocumentFromAuth = async (
 
   //   if data doesn`t exist we want to create, set
   if (!userSnapshot.exists()) {
-    const { displayName, email, photoURL, uid } = userAuth;
+    const { displayName, email, photoURL, uid, address, phoneNumber } =
+      userAuth;
     const createdAt = new Date();
 
     try {
@@ -78,6 +79,8 @@ export const createUserDocumentFromAuth = async (
         name: displayName,
         email,
         photoURL,
+        address,
+        phoneNumber,
         id: uid,
         createdAt: JSON.parse(JSON.stringify(createdAt)),
         ...additionalInformation,
@@ -110,3 +113,36 @@ export const signOutUser = async () => await signOut(auth);
 
 export const onAuthStateChangedListener = (callback: () => void) =>
   onAuthStateChanged(auth, callback);
+
+//reading customers
+export const getCustomersAndDocuments = async () => {
+  //we want collectionRef of 'categories'
+  const collectionRef = collection(db, "customers");
+  //we apply 'query' method on collectionRef which gives us object 'q'
+  const q = query(collectionRef);
+
+  //we get querysnapshot from getDocs on'q';
+  const querySnapshot = await getDocs(q);
+
+  //from 'querySnapshot.docs' we have an array of all our categories which we reduce over (we reduce over that arr) in order to structure we want (an arr of objects with 'items.title' and items) = in order to end up with an object
+
+  // querySnapshot.docs.reduce(()=>{},{}) we need obj at the end
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const data = docSnapshot.data();
+    acc.push(data);
+    return acc;
+  }, []);
+  // console.log(categoryMap);
+  return categoryMap;
+};
+
+export const updateCustomer = async (id, name, email, address, phoneNumber) => {
+  const customerDoc = doc(db, "customers", id);
+  return await updateDoc(customerDoc, {
+    name,
+    email,
+    id,
+    address,
+    phoneNumber,
+  });
+};

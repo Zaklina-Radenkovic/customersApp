@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { ArrowRight as ArrowRightIcon } from "../../icons/arrow-right";
 import { PencilAlt as PencilAltIcon } from "../../icons/pencil-alt";
-// import { getInitials } from "../../../utils/get-initials";
+import { getInitials } from "../../utils/getInitials";
 import { Customer } from "../../../pages/customers";
 import { Scrollbar } from "../../scrollbar";
 // import { useTranslation } from "react-i18next";
@@ -122,8 +122,8 @@ export const ListTable = ({
               </TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Location</TableCell>
-              {/* <TableCell>Spent</TableCell> */}
+              {/* <TableCell>Location</TableCell> */}
+
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -162,13 +162,18 @@ export const ListTable = ({
                           width: 42,
                         }}
                       >
-                        {/* {getInitials(customer.name)} */}
+                        {getInitials(customer.name)}
                       </Avatar>
                       <Box sx={{ ml: 1 }}>
-                        <NextLink href={`/customers/${customer.id}`} passHref>
-                          <Link color="inherit" variant="subtitle2">
-                            {customer.name}
-                          </Link>
+                        <NextLink
+                          href={`/customers/${customer.id}`}
+                          passHref
+                          color="inherit"
+                          variant="subtitle2"
+                        >
+                          {/* <Link color="inherit" variant="subtitle2"> */}
+                          {customer.name}
+                          {/* </Link> */}
                         </NextLink>
                       </Box>
                     </Box>
@@ -178,19 +183,22 @@ export const ListTable = ({
                       {customer.email}
                     </Typography>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     {`${customer.city},  ${customer.country}`}
-                  </TableCell>
-                  {/* <TableCell>{customer.totalOrders}</TableCell> */}
+                  </TableCell> */}
 
                   <TableCell align="right">
                     <NextLink href={`/customers/${customer.id}/edit`} passHref>
-                      <IconButton component="a">
+                      <IconButton
+                      //  component="a"
+                      >
                         <PencilAltIcon fontSize="small" />
                       </IconButton>
                     </NextLink>
                     <NextLink href={`/customers/${customer.id}`} passHref>
-                      <IconButton component="a">
+                      <IconButton
+                      // component="a"
+                      >
                         <ArrowRightIcon fontSize="small" />
                       </IconButton>
                     </NextLink>

@@ -16,7 +16,7 @@ import { ListTable } from "../../src/components/customer/ListTable";
 import { Plus as PlusIcon } from "../../src/icons/plus";
 import { Search as SearchIcon } from "../../src/icons/search";
 
-// import { getCustomersAndDocuments } from "../../src/utils/firebase";
+import { getCustomersAndDocuments } from "../../src/lib/firebase";
 // import { AuthGuard } from "../../../components/authentication/auth-guard";
 
 export type Customer = {
@@ -115,31 +115,31 @@ const CustomerList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [query, setQuery] = useState<string>("");
 
-  // useEffect(() => {
-  //   //calling 'async' fnc inside of useeffect
-  //   // const getCustomersMap = async () => {
-  //     // @ts-ignore
-  //     // const data = await getCustomersAndDocuments("customers");
+  useEffect(() => {
+    // calling 'async' fnc inside of useeffect
+    const getCustomersMap = async () => {
+      // @ts-ignore
+      const data = await getCustomersAndDocuments("customers");
 
-  //     // const customersArr = data.reduce((acc, user) => {
-  //     //   const customer = {
-  //     //     ...user,
-  //     //     name: user.displayName || user.name,
-  //     //     avatar: user.avatar || user.photoURL,
-  //     //     id: user.uid || user.id,
-  //     //     city: user.city || "-",
-  //     //     country: user.country || "-",
-  //     //   };
-  //     //   acc.push(customer);
-  //     //   return acc;
-  //     // }, []);
+      const customersArr = data.reduce((acc, user) => {
+        const customer = {
+          ...user,
+          name: user.displayName || user.name,
+          avatar: user.avatar || user.photoURL,
+          id: user.uid || user.id,
+          city: user.city || "-",
+          country: user.country || "-",
+        };
+        acc.push(customer);
+        return acc;
+      }, []);
 
-  //     // console.log(customersArr);
+      // console.log(customersArr);
 
-  //     // setCustomers(customersArr);
-  //   };
-  //   getCustomersMap();
-  // }, []);
+      setCustomers(customersArr);
+    };
+    getCustomersMap();
+  }, []);
 
   const handleQueryChange = (event: React.SyntheticEvent<Element, Event>) => {
     event.preventDefault();

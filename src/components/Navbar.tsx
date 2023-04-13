@@ -33,7 +33,7 @@ const NavbarRoot = styled(AppBar)(({ theme }) => ({
 const AccountButton = () => {
   const [openPopover, setOpenPopover] = useState(false);
   const anchorRef = useRef(null);
-
+  //@ts-ignore
   const { user } = useCustomerContext();
 
   const handleOpenPopover = () => {

@@ -30,10 +30,12 @@ export const AccountPopover = ({
   ...other
 }: AccountPopoverProp) => {
   const router = useRouter();
+  //@ts-ignore
   const { user, setUser } = useCustomerContext();
-
+  //console.log(user);
   const handleLogout = async () => {
     try {
+      //why here like this
       onClose?.();
       await signOutUser();
 
@@ -86,7 +88,7 @@ export const AccountPopover = ({
       </Box>
       <Divider />
       <Box sx={{ my: 1 }}>
-        <NextLink href="/account" passHref>
+        <NextLink href="/account" passHref onClick={onClose}>
           <MenuItem>
             <ListItemIcon>
               <UserCircleIcon fontSize="small" />

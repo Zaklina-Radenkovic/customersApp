@@ -6,8 +6,8 @@ import {
   Divider,
   useMediaQuery,
 } from "@mui/material";
-// import { PropertyList } from "../../property-list";
-// import { PropertyListItem } from "../../property-list-item";
+import { PropertyList } from "../../PropertyList";
+import { PropertyListItem } from "../../PropertyListItem";
 
 type CustomerBasicDetailsProps = {
   address?: string;
@@ -32,29 +32,29 @@ export const BasicDetails = ({
     <Card {...other}>
       <CardHeader title="Basic Details" />
       <Divider />
-      {/* <PropertyList>
+      <PropertyList>
         <PropertyListItem
           align={align}
           // @ts-ignore
           divider
           label="Email"
-          // value={email}
+          value={email}
         />
         <PropertyListItem
           align={align}
           // @ts-ignore
           divider
           label="Phone"
-          // value={phone}
+          value={phone}
         />
         <PropertyListItem
           align={align}
           // @ts-ignore
           divider
           label="Address"
-          // value={address}
+          value={address}
         />
-      </PropertyList> */}
+      </PropertyList>
       <CardActions
         sx={{
           flexWrap: "wrap",

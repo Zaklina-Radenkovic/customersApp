@@ -16,10 +16,10 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { PencilAlt as PencilAltIcon } from "../../../src/icons/pencil-alt";
 
-// import { getInitials } from "../../../src/utils/get-initials";
+import { getInitials } from "../../../src/utils/getInitials";
 import { BasicDetails } from "../../../src/components/customer/BasicDetails";
 import { Customer } from "../../customers";
-
+import { db } from "../../../src/lib/firebase";
 import { useMounted } from "../../../src/hooks/use-mounted";
 import { useRouter } from "next/router";
 
@@ -35,34 +35,34 @@ export interface iCustomerDetails extends Customer {
 }
 
 const CustomerDetails = ({ customerDetail, id }: any) => {
-  console.log(id);
+  // console.log(id);
   const isMounted = useMounted();
   const [customer, setCustomer] = useState<null | iCustomerDetails>(
     customerDetail
   );
 
-  // const router = useRouter();
-  // const customerId = router.query.customerId;
-  // // useEffect(() => {
-  // //   gtm.push({ event: "page_view" });
-  // // }, []);
+  const router = useRouter();
+  const customerId = router.query.customerId;
+  // useEffect(() => {
+  //   gtm.push({ event: "page_view" });
+  // }, []);
 
-  // useEffect(
-  //   () => {
-  //     setCustomer(customer);
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   []
-  // );
+  useEffect(
+    () => {
+      setCustomer(customer);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
-  // if (!customer) {
-  //   return null;
-  // }
+  if (!customer) {
+    return null;
+  }
 
   return (
     <>
       <Head>
-        <title>Customer Details | Gym-tastic</title>
+        <title>Customer Details | CustomList</title>
       </Head>
 
       <Box
@@ -75,10 +75,9 @@ const CustomerDetails = ({ customerDetail, id }: any) => {
         <Container maxWidth="md">
           <div>
             <Box sx={{ mb: 4 }}>
-              <NextLink href="/customers" passHref>
-                <Link
+              <NextLink href="/customers" passHref color="textPrimary">
+                <Box
                   color="textPrimary"
-                  component="a"
                   sx={{
                     alignItems: "center",
                     display: "flex",
@@ -86,7 +85,7 @@ const CustomerDetails = ({ customerDetail, id }: any) => {
                 >
                   <ArrowBackIcon fontSize="small" sx={{ mr: 1 }} />
                   <Typography variant="subtitle2">Customers</Typography>
-                </Link>
+                </Box>
               </NextLink>
             </Box>
             <Grid container justifyContent="space-between" spacing={3}>
@@ -106,7 +105,7 @@ const CustomerDetails = ({ customerDetail, id }: any) => {
                     width: 64,
                   }}
                 >
-                  {/* {getInitials(customer?.name)} */}
+                  {getInitials(customer?.name)}
                 </Avatar>
                 <div>
                   <Typography variant="h4">{customer?.email}</Typography>
@@ -125,7 +124,6 @@ const CustomerDetails = ({ customerDetail, id }: any) => {
               <Grid item sx={{ m: -1 }}>
                 <NextLink href={`/customers/${customer?.id}/edit`} passHref>
                   <Button
-                    component="a"
                     endIcon={<PencilAltIcon fontSize="small" />}
                     sx={{ m: 1 }}
                     variant="outlined"
@@ -155,37 +153,37 @@ const CustomerDetails = ({ customerDetail, id }: any) => {
 
 export default CustomerDetails;
 
-// export const getStaticPaths = async () => {
-//   const userData = await getDocs(collection(db, "customers"));
-//   // @ts-ignore
-//   const paths = userData.docs.map((customer) => ({
-//     params: { customerId: customer.id.toString() },
-//   }));
+export const getStaticPaths = async () => {
+  const userData = await getDocs(collection(db, "customers"));
+  // @ts-ignore
+  const paths = userData.docs.map((customer) => ({
+    params: { customerId: customer.id.toString() },
+  }));
 
-//   return {
-//     paths,
-//     fallback: false,
-//   };
-// };
+  return {
+    paths,
+    fallback: false,
+  };
+};
 
-// export const getStaticProps = async (context: any) => {
-//   // console.log(context);
-//   let id = context?.params.customerId;
-//   const customerRef = doc(db, "customers", id);
-//   const customerSnap = await getDoc(customerRef);
-//   // const customerDetail = customerSnap.data();
+export const getStaticProps = async (context: any) => {
+  // console.log(context);
+  let id = context?.params.customerId;
+  const customerRef = doc(db, "customers", id);
+  const customerSnap = await getDoc(customerRef);
+  // const customerDetail = customerSnap.data();
 
-//   const customerData = customerSnap.data();
-//   const customerDetail = {
-//     ...customerData,
-//     name: customerData?.displayName || customerData?.name,
-//     avatar: customerData?.avatar || customerData?.photoURL,
-//   };
+  const customerData = customerSnap.data();
+  const customerDetail = {
+    ...customerData,
+    name: customerData?.displayName || customerData?.name,
+    avatar: customerData?.avatar || customerData?.photoURL,
+  };
 
-//   if (!customerDetail) return { notFound: true };
+  if (!customerDetail) return { notFound: true };
 
-//   return {
-//     // props: { customerDetail: [JSON.parse(JSON.stringify(customerDetail))] },
-//     props: { customerDetail, id },
-//   };
-// };
+  return {
+    // props: { customerDetail: [JSON.parse(JSON.stringify(customerDetail))] },
+    props: { customerDetail, id },
+  };
+};

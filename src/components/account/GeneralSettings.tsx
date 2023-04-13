@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useCallback } from "react";
 import {
   Avatar,
   Box,
@@ -11,16 +11,39 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-// import { AppUserContext } from "../../../context/appUserContext";
+
 import { UserCircle as UserCircleIcon } from "../../icons/user-circle";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
+import { useCustomerContext } from "../../context/CustomerContext";
+
 export const GeneralSettings = (props: {}) => {
+  const { user } = useCustomerContext();
+
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(null); //(user?.displayName);
-  const [email, setEmail] = useState(null); //(user?.email);
-  const [image, setImage] = useState(null); //(user?.photoURL);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState(user?.email);
+  const [image, setImage] = useState(user?.photoURL);
+
+  const handleChange = useCallback(
+    (e) => {
+      setName(e.target.value);
+    },
+    [name]
+  );
+  // const [userState, setUserState] = useState({
+  //   name: user?.name,
+  //   email: user?.email,
+  //   // image: user?.photoURL,
+  // });
+
+  // const handleUserChange = (e) => {
+  //   setUserState((prevState) => ({
+  //     ...prevState,
+  //     [e.target.name]: e.target.value,
+  //   }));
+  // };
 
   const SUPPORTED_FORMATS = [
     "image/jpg",
@@ -30,7 +53,7 @@ export const GeneralSettings = (props: {}) => {
   ];
   const formik1 = useFormik({
     initialValues: {
-      image: null,
+      image: "",
       name: "",
       email: "",
     },
@@ -48,11 +71,8 @@ export const GeneralSettings = (props: {}) => {
       //     // console.log(value);
       //     !value || (value && SUPPORTED_FORMATS.includes(value?.type))
       // ),
-      // name: Yup.string().max(255),
-      // email: Yup.string()
-
-      // .email(`${t("Must be a valid email")}`)
-      // .max(255),
+      name: Yup.string().max(255),
+      email: Yup.string().email("Must be a valid email").max(255),
     }),
     onSubmit: async (values, helpers) => {
       console.log(values);
@@ -67,17 +87,28 @@ export const GeneralSettings = (props: {}) => {
     },
     validationSchema: Yup.object({
       password: Yup.string()
-
-        // .required(`${t("No password provided.")}`)
+        .required("No password provided.")
         .min(8, "Password is too short - should be 8 chars minimum.")
         .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
-      // confirmPassword: Yup.string().oneOf(
-      //    [Yup.ref("password"), null]
-
-      //   `${t("Passwords must match")}`
-      // ),
+      confirmPassword: Yup.string().oneOf(
+        [Yup.ref("password"), null],
+        "Passwords must match"
+      ),
     }),
     onSubmit: async (values, helpers) => {
+      //   const data = {
+      //     image: values.image,
+      //     name: values.name,
+      //     email: values.email,
+      //   };
+      //   // toast.success('Account updated')
+      //   // router.push('').catch(console.error);
+      //   console.error(err);
+      //   // toast.error("Something went wrong!");
+      //   helpers.setStatus({ success: false });
+      //   helpers.setErrors({ submit: err.message });
+      //   helpers.setSubmitting(false);
+      // },
       console.log(values);
     },
   });
@@ -88,7 +119,6 @@ export const GeneralSettings = (props: {}) => {
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={4} xs={12}>
-              {/* @ts-ignore */}
               <Typography variant="h6">Basic details</Typography>
             </Grid>
             <Grid item md={8} xs={12}>
@@ -100,7 +130,7 @@ export const GeneralSettings = (props: {}) => {
                   }}
                 >
                   <Avatar
-                    // src={user?.photoURL}
+                    src={user?.photoURL}
                     sx={{
                       height: 64,
                       mr: 2,
@@ -109,11 +139,17 @@ export const GeneralSettings = (props: {}) => {
                   >
                     <UserCircleIcon fontSize="small" />
                   </Avatar>
-                  <Button
-                  // onChange={(event) =>
-                  //   formik1.setFieldValue("image", event.target.files[0])
-                  // }
-                  >
+                  <Button>
+                    <input
+                      name="image"
+                      hidden
+                      accept="image/*"
+                      multiple
+                      type="file"
+                      onChange={(event) =>
+                        formik1.setFieldValue("image", event.target!.files[0])
+                      }
+                    />
                     Change
                   </Button>
                 </Box>
@@ -125,21 +161,19 @@ export const GeneralSettings = (props: {}) => {
                   }}
                 >
                   <TextField
-                    error={Boolean(formik1.touched.name && formik1.errors.name)}
-                    helperText={formik1.touched.name && formik1.errors.name}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    // value={name || user?.name || ""}
-                    // onChange={(e) => {
-                    //   setName(e.currentTarget.value);
-                    // }}
-                    label="Full Name"
-                    size="small"
                     sx={{
                       flexGrow: 1,
                       mr: 3,
                     }}
+                    size="small"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    label="Full Name"
+                    value={name || user?.name || ""}
+                    onChange={handleChange}
+                    error={Boolean(formik1.touched.name && formik1.errors.name)}
+                    helperText={formik1.touched.name && formik1.errors.name}
                   />
                 </Box>
                 <Box
@@ -150,20 +184,6 @@ export const GeneralSettings = (props: {}) => {
                   }}
                 >
                   <TextField
-                    error={Boolean(
-                      formik1.touched.email && formik1.errors.email
-                    )}
-                    helperText={formik1.touched.email && formik1.errors.email}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    // value={email || user?.email || ""}
-                    // onChange={(e) => {
-                    //   setEmail(e.currentTarget.value);
-                    // }}
-                    label="Email Address"
-                    required
-                    size="small"
                     sx={{
                       flexGrow: 1,
                       mr: 3,
@@ -173,12 +193,24 @@ export const GeneralSettings = (props: {}) => {
                         },
                       }),
                     }}
+                    label="Email Address"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    size="small"
+                    required
+                    value={email || user?.email || ""}
+                    onChange={(e) => setEmail(e.target.value)}
+                    error={Boolean(
+                      formik1.touched.email && formik1.errors.email
+                    )}
+                    helperText={formik1.touched.email && formik1.errors.email}
                   />
                 </Box>
                 <Button
+                  sx={{ mt: 4 }}
                   variant="contained"
                   // onClick={handleEdit}
-                  sx={{ mt: 4 }}
                   disabled={formik1.isSubmitting}
                   type="submit"
                 >
@@ -189,6 +221,7 @@ export const GeneralSettings = (props: {}) => {
           </Grid>
         </CardContent>
       </Card>
+
       <Card sx={{ mt: 4 }}>
         <CardContent>
           <Grid container spacing={3}>
@@ -212,16 +245,16 @@ export const GeneralSettings = (props: {}) => {
                   sx={{
                     flexGrow: 1,
                     mr: 3,
-                    // ...(!isEditing && {
-                    //   "& .MuiOutlinedInput-notchedOutline": {
-                    //     borderStyle: "dotted",
-                    //   },
-                    // }),
+                    ...(!isEditing && {
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderStyle: "dotted",
+                      },
+                    }),
                   }}
                   value={formik2.values.oldPassword}
-                  // error={Boolean(
-                  //   formik2.touched.oldPassword && formik2.errors.oldPassword
-                  // )}
+                  error={Boolean(
+                    formik2.touched.oldPassword && formik2.errors.oldPassword
+                  )}
                   // helperText={
                   //   formik2.touched.oldPassword && formik2.errors.oldPassword
                   // }

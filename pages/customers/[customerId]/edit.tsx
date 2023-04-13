@@ -9,38 +9,14 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { EditForm } from "../../../src/components/customer/EditForm";
 import { useMounted } from "../../../src/hooks/use-mounted";
 import { collection, doc, getDocs, getDoc } from "firebase/firestore";
-// import { getInitials } from "../../../src/utils/get-initials";
+import { getInitials } from "../../../src/utils/getInitials";
 import { Customer } from "../../customers";
 import { db } from "../../../src/lib/firebase";
 
 const CustomerEdit = ({ customerDetail }) => {
   const isMounted = useMounted();
   const [customer, setCustomer] = useState<null | Customer>(customerDetail);
-
-  // const getCustomer = useCallback(async () => {
-  //   try {
-  //     const data = await customerApi.getCustomer();
-
-  //     if (isMounted()) {
-  //       // @ts-ignore
-  //       setCustomer(data);
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }, [isMounted]);
-
-  // useEffect(
-  //   () => {
-  //     getCustomer();
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   []
-  // );
-
-  // if (!customer) {
-  //   return null;
-  // }
+  // const customerId = router.query.customerId;
 
   useEffect(
     () => {
@@ -57,7 +33,7 @@ const CustomerEdit = ({ customerDetail }) => {
   return (
     <>
       <Head>
-        <title>Customer Edit | Gym-tastic</title>
+        <title>Customer Edit | CustomList</title>
       </Head>
 
       <Box
@@ -92,14 +68,14 @@ const CustomerEdit = ({ customerDetail }) => {
             }}
           >
             <Avatar
-              // src={customer?.avatar}
+              src={customer?.avatar}
               sx={{
                 height: 64,
                 mr: 2,
                 width: 64,
               }}
             >
-              {/* {getInitials(customer?.name)} */}
+              {getInitials(customer?.name)}
             </Avatar>
             <div>
               <Typography noWrap variant="h4">
@@ -130,36 +106,36 @@ const CustomerEdit = ({ customerDetail }) => {
 
 export default CustomerEdit;
 
-// export const getStaticPaths = async () => {
-//   const userData = await getDocs(collection(db, "customers"));
-//   // @ts-ignore
-//   const paths = userData.docs.map((customer) => ({
-//     params: { customerId: customer.id.toString() },
-//   }));
+export const getStaticPaths = async () => {
+  const userData = await getDocs(collection(db, "customers"));
+  // @ts-ignore
+  const paths = userData.docs.map((customer) => ({
+    params: { customerId: customer.id.toString() },
+  }));
 
-//   return {
-//     paths,
-//     fallback: false,
-//   };
-// };
+  return {
+    paths,
+    fallback: false,
+  };
+};
 
-// export const getStaticProps = async (context) => {
-//   let id = context?.params.customerId;
-//   const customerRef = doc(db, "customers", id);
-//   const customerSnap = await getDoc(customerRef);
-//   // const customerDetail = customerSnap.data();
+export const getStaticProps = async (context) => {
+  let id = context?.params.customerId;
+  const customerRef = doc(db, "customers", id);
+  const customerSnap = await getDoc(customerRef);
+  // const customerDetail = customerSnap.data();
 
-//   const customerData = customerSnap.data();
-//   const customerDetail = {
-//     ...customerData,
-//     name: customerData?.displayName || customerData?.name,
-//     avatar: customerData?.avatar || customerData?.photoURL,
-//   };
+  const customerData = customerSnap.data();
+  const customerDetail = {
+    ...customerData,
+    name: customerData?.displayName || customerData?.name,
+    avatar: customerData?.avatar || customerData?.photoURL,
+  };
 
-//   if (!customerDetail) return { notFound: true };
+  if (!customerDetail) return { notFound: true };
 
-//   return {
-//     // props: { customerDetail: [JSON.parse(JSON.stringify(customerDetail))] },
-//     props: { customerDetail },
-//   };
-// };
+  return {
+    // props: { customerDetail: [JSON.parse(JSON.stringify(customerDetail))] },
+    props: { customerDetail },
+  };
+};

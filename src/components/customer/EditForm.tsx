@@ -14,6 +14,8 @@ import {
   TextField,
 } from "@mui/material";
 import { wait } from "../../utils/wait";
+import { updateCustomer } from "../../lib/firebase";
+import { updateProfile } from "firebase/auth";
 
 type iCustomerEditFormProps = {
   address: string;
@@ -23,16 +25,15 @@ type iCustomerEditFormProps = {
   id: string;
 };
 
-export const EditForm = (
-  customer: iCustomerEditFormProps,
-  ...other: any
-) => {
+export const EditForm = (customer: iCustomerEditFormProps, ...other: any) => {
+  // console.log(customer.customer.id);
   const formik = useFormik({
     initialValues: {
       address: customer.address || "",
       email: customer.email || "",
       name: customer.name || "",
       phone: customer.phone || "",
+      id: customer.id || "",
       submit: null,
     },
     validationSchema: Yup.object({
@@ -47,9 +48,16 @@ export const EditForm = (
     }),
 
     onSubmit: async (values, helpers) => {
+      const email = values.email;
+      const id = customer.customer?.id;
+      const name = values.name;
+      const address = values.address;
+      const phone = values.phone;
+
       try {
-        // NOTE: Make API request
+        await updateCustomer(id, name, email, address, phone);
         await wait(500);
+        console.log(values);
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
         toast.success("Customer updated!");
@@ -140,7 +148,7 @@ export const EditForm = (
           </Button>
           <NextLink href="/dashboard/customers/1" passHref>
             <Button
-              component="a"
+              // component="a"
               disabled={formik.isSubmitting}
               sx={{
                 m: 1,

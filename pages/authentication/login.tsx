@@ -24,11 +24,10 @@ import {
 // import { UserContext } from "../../src/context/userContext";
 import { useMounted } from "../../src/hooks/use-mounted";
 import { useUserContext } from "../../src/context/UserContext";
-// import { AppUserContext } from "../../src/context/appUserContext";
 
 const Login = () => {
-  const { setUser } = useUserContext();
-  // const { setUser, setIsLogin } = useContext(AppUserContext);
+  // const { setUser } = useUserContext();
+
   const isMounted = useMounted();
   const router = useRouter();
 
