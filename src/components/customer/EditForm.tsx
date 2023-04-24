@@ -1,7 +1,8 @@
 import NextLink from "next/link";
+// import { useFormikContext } from "formik";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
-import { useFormik } from "formik";
+import { useFormik, useFormikContext } from "formik";
 import {
   Box,
   Button,
@@ -14,10 +15,10 @@ import {
   TextField,
 } from "@mui/material";
 import { wait } from "../../utils/wait";
-import { updateCustomer } from "../../lib/firebase";
-import { updateProfile } from "firebase/auth";
+import { updateCustomer, deleteCustomer } from "../../lib/firebase";
 
 type iCustomerEditFormProps = {
+  customer: object;
   address: string;
   email: string;
   phone: string;
@@ -25,47 +26,66 @@ type iCustomerEditFormProps = {
   id: string;
 };
 
-export const EditForm = (customer: iCustomerEditFormProps, ...other: any) => {
-  // console.log(customer.customer.id);
+export const EditForm = (
+  { customer }: iCustomerEditFormProps,
+  ...other: any
+) => {
+  // console.log(customer.name);
   const formik = useFormik({
     initialValues: {
-      address: customer.address || "",
-      email: customer.email || "",
       name: customer.name || "",
+      email: customer.email || "",
+      address: customer.address || "",
       phone: customer.phone || "",
       id: customer.id || "",
       submit: null,
     },
     validationSchema: Yup.object({
+      name: Yup.string().max(255).required("Name is required"),
+      email: Yup.string()
+        .email("Must be a valid email")
+        .max(255)
+        .required("Email is required"),
       address: Yup.string().max(255),
-      email: Yup.string(),
-      // .email(`${t("Must be a valid email")}`)
-      // .max(255)
-      // .required(`${t("Email is required")}`),
-      name: Yup.string().max(255),
-      // .required(`${t("Name is required")}`),
       phone: Yup.string().max(15),
     }),
 
     onSubmit: async (values, helpers) => {
-      const email = values.email;
-      const id = customer.customer?.id;
-      const name = values.name;
-      const address = values.address;
-      const phone = values.phone;
+      const data = {
+        email: values.email,
+        // id = customer.id;
+        name: values.name,
+        address: values.address,
+        phone: values.phone,
+      };
+      // const email = values.email;
+      const id = customer.id;
+      // const name = values.name;
+      // const address = values.address;
+      // const phone = values.phone;
 
       try {
-        await updateCustomer(id, name, email, address, phone);
+        await updateCustomer(id, data);
         await wait(500);
         console.log(values);
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
         toast.success("Customer updated!");
+        helpers.resetForm({
+          values: {
+            name: "",
+            email: "",
+            address: "",
+            phone: "",
+            id: "",
+            submit: null,
+          },
+        });
       } catch (err) {
         console.error(err);
         toast.error("Something went wrong!");
         helpers.setStatus({ success: false });
-        // helpers.setErrors({ submit: err.message });
+        helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
     },
@@ -80,41 +100,41 @@ export const EditForm = (customer: iCustomerEditFormProps, ...other: any) => {
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
               <TextField
-                error={Boolean(formik.touched.name && formik.errors.name)}
                 fullWidth
-                helperText={formik.touched.name && formik.errors.name}
                 label="Full name"
                 name="name"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
                 required
                 value={formik.values.name}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                // helperText={formik.touched.name && formik.errors.name}
+                error={Boolean(formik.touched.name && formik.errors.name)}
               />
             </Grid>
             <Grid item md={6} xs={12}>
               <TextField
-                error={Boolean(formik.touched.email && formik.errors.email)}
                 fullWidth
-                helperText={formik.touched.email && formik.errors.email}
                 label="Email address"
                 name="email"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
                 required
                 value={formik.values.email}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                // helperText={formik.touched.email && formik.errors.email}
+                error={Boolean(formik.touched.email && formik.errors.email)}
               />
             </Grid>
 
             <Grid item md={6} xs={12}>
               <TextField
-                error={Boolean(formik.touched.address && formik.errors.address)}
                 fullWidth
-                helperText={formik.touched.address && formik.errors.address}
-                label="Address "
+                label="Address"
                 name="address"
+                value={formik.values.address}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.address}
+                helperText={formik.touched.address && formik.errors.address}
+                error={Boolean(formik.touched.address && formik.errors.address)}
               />
             </Grid>
 
@@ -124,10 +144,10 @@ export const EditForm = (customer: iCustomerEditFormProps, ...other: any) => {
                 fullWidth
                 helperText={formik.touched.phone && formik.errors.phone}
                 label="Phone number"
-                name="phone"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
+                // name="phone"
                 value={formik.values.phone}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </Grid>
           </Grid>
@@ -146,20 +166,37 @@ export const EditForm = (customer: iCustomerEditFormProps, ...other: any) => {
           >
             Update
           </Button>
-          <NextLink href="/dashboard/customers/1" passHref>
+          <NextLink href={`/customers/${customer.id}`} passHref>
             <Button
-              // component="a"
+              variant="outlined"
               disabled={formik.isSubmitting}
               sx={{
                 m: 1,
                 mr: "auto",
               }}
-              variant="outlined"
             >
               Cancel
             </Button>
           </NextLink>
-          <Button color="error" disabled={formik.isSubmitting}>
+          <Button
+            color="error"
+            disabled={formik.isSubmitting}
+            //disabled={!dirty}
+            onClick={() => {
+              deleteCustomer(customer.id);
+              toast.success("Customer successfully deleted");
+              formik.resetForm({
+                values: {
+                  name: "",
+                  email: "",
+                  address: "",
+                  phone: "",
+                  id: "",
+                  submit: null,
+                },
+              });
+            }}
+          >
             Delete user
           </Button>
         </CardActions>

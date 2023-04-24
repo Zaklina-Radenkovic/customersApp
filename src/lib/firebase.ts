@@ -20,12 +20,22 @@ import {
   getDoc,
   setDoc,
   getDocs,
+  deleteDoc,
   query,
   collection,
   updateDoc,
   writeBatch,
 } from "firebase/firestore";
-import { User } from "firebase/auth";
+// import { User } from "firebase/auth";
+
+type User = {
+  displayName: string;
+  uid: string;
+  email: string;
+  photoURL: string;
+  address: string;
+  phoneNumber: number;
+};
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -70,7 +80,7 @@ export const createUserDocumentFromAuth = async (
 
   //   if data doesn`t exist we want to create, set
   if (!userSnapshot.exists()) {
-    const { displayName, email, photoURL, uid, address, phoneNumber } =
+    const { displayName, email, photoURL, uid, address, phoneNumber }: User =
       userAuth;
     const createdAt = new Date();
 
@@ -79,8 +89,8 @@ export const createUserDocumentFromAuth = async (
         name: displayName,
         email,
         photoURL,
-        address,
-        phoneNumber,
+        // address,
+        // phoneNumber,
         id: uid,
         createdAt: JSON.parse(JSON.stringify(createdAt)),
         ...additionalInformation,
@@ -136,13 +146,28 @@ export const getCustomersAndDocuments = async () => {
   return categoryMap;
 };
 
-export const updateCustomer = async (id, name, email, address, phoneNumber) => {
+//update User
+// export const updateCustomer = async (id, name, email, address, phoneNumber) => {
+//   const customerDoc = doc(db, "customers", id);
+//   return await updateDoc(customerDoc, {
+//     name,
+//     email,
+//     id,
+//     address,
+//     phoneNumber,
+//   });
+// };
+
+export const updateCustomer = async (id: User["uid"], data = {}) => {
   const customerDoc = doc(db, "customers", id);
   return await updateDoc(customerDoc, {
-    name,
-    email,
     id,
-    address,
-    phoneNumber,
+    ...data,
   });
+};
+
+//delete User
+export const deleteCustomer = async (id: string) => {
+  const customerDoc = doc(db, "customers", id);
+  return await deleteDoc(customerDoc);
 };

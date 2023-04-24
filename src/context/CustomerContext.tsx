@@ -16,7 +16,7 @@ export const CustomerProvider = ({ children }) => {
         const userRef = doc(getFirestore(), "customers", currentUser?.uid);
         const data = await getDoc(userRef);
         const userData = data.data();
-        // console.log(userData);
+        console.log(userData);
         setUser(userData);
       }
     };

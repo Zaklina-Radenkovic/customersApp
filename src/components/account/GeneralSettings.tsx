@@ -16,22 +16,23 @@ import { UserCircle as UserCircleIcon } from "../../icons/user-circle";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
+import { updateCustomer } from "../../lib/firebase";
 import { useCustomerContext } from "../../context/CustomerContext";
 
 export const GeneralSettings = (props: {}) => {
   const { user } = useCustomerContext();
-
+  // console.log(user);
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState(user?.email);
-  const [image, setImage] = useState(user?.photoURL);
+  // const [name, setName] = useState("");
+  // const [email, setEmail] = useState(user?.email);
+  // const [image, setImage] = useState(user?.photoURL);
 
-  const handleChange = useCallback(
-    (e) => {
-      setName(e.target.value);
-    },
-    [name]
-  );
+  // const handleChange = useCallback(
+  //   (e) => {
+  //     setName(e.target.value);
+  //   },
+  //   [name]
+  // );
   // const [userState, setUserState] = useState({
   //   name: user?.name,
   //   email: user?.email,
@@ -53,9 +54,10 @@ export const GeneralSettings = (props: {}) => {
   ];
   const formik1 = useFormik({
     initialValues: {
-      image: "",
-      name: "",
-      email: "",
+      image: user?.photoURL || "",
+      name: user?.name || "",
+      email: user?.email || "",
+      id: user?.id || "",
     },
     validationSchema: Yup.object({
       image: Yup.mixed().nullable(),
@@ -72,10 +74,33 @@ export const GeneralSettings = (props: {}) => {
       //     !value || (value && SUPPORTED_FORMATS.includes(value?.type))
       // ),
       name: Yup.string().max(255),
-      email: Yup.string().email("Must be a valid email").max(255),
+      email: Yup.string()
+        .email("Must be a valid email")
+        .max(255)
+        .required("Email is required"),
     }),
     onSubmit: async (values, helpers) => {
-      console.log(values);
+      const data = {
+        email: values.email,
+        name: values.name,
+      };
+
+      const id = user.id;
+
+      try {
+        await updateCustomer(id, data);
+        // await wait(500);
+        console.log(values);
+        helpers.setStatus({ success: true });
+        helpers.setSubmitting(false);
+        // toast.success("Customer updated!");
+      } catch (err) {
+        console.error(err);
+        // toast.error("Something went wrong!");
+        helpers.setStatus({ success: false });
+        helpers.setErrors({ submit: err.message });
+        helpers.setSubmitting(false);
+      }
     },
   });
 
@@ -169,9 +194,10 @@ export const GeneralSettings = (props: {}) => {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    name="name"
                     label="Full Name"
-                    value={name || user?.name || ""}
-                    onChange={handleChange}
+                    value={formik1.values.name}
+                    onChange={formik1.handleChange}
                     error={Boolean(formik1.touched.name && formik1.errors.name)}
                     helperText={formik1.touched.name && formik1.errors.name}
                   />
@@ -194,13 +220,14 @@ export const GeneralSettings = (props: {}) => {
                       }),
                     }}
                     label="Email Address"
+                    name="email"
                     InputLabelProps={{
                       shrink: true,
                     }}
                     size="small"
                     required
-                    value={email || user?.email || ""}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={formik1.values.email}
+                    onChange={formik1.handleChange}
                     error={Boolean(
                       formik1.touched.email && formik1.errors.email
                     )}

@@ -77,7 +77,6 @@ const CustomerDetails = ({ customerDetail, id }: any) => {
             <Box sx={{ mb: 4 }}>
               <NextLink href="/customers" passHref color="textPrimary">
                 <Box
-                  color="textPrimary"
                   sx={{
                     alignItems: "center",
                     display: "flex",

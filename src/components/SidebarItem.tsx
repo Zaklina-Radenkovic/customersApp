@@ -1,5 +1,6 @@
 import { useState } from "react";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 
 import { Box, Button, Collapse, ListItem, List } from "@mui/material";
 import { ChevronDown as ChevronDownIcon } from "../icons/chevron-down";
@@ -11,8 +12,10 @@ type SidebarItemProp = {
   open?: boolean;
   path: string;
   title: string;
-  router: any;
+  // router: any;
+  menuItem: any;
   subsections: [];
+  query: string;
 };
 
 export const SidebarItem = ({
@@ -21,11 +24,19 @@ export const SidebarItem = ({
   open: openProp,
   path,
   title,
-  router,
+  // router,
+  menuItem,
+  query,
   subsections,
   ...other
 }: SidebarItemProp) => {
   const [open, setOpen] = useState(!!openProp);
+
+  const router = useRouter();
+  // const partialMatch = menuItem.path ? path.includes(menuItem.path) : false;
+  // const exactMatch = path.split("?")[0] === menuItem.path;
+
+  const customerId = router.query.customerId;
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -81,7 +92,12 @@ export const SidebarItem = ({
           >
             {subsections.map((section: Record<string, string>) => (
               <ListItem sx={{ px: 2 }} key={section.title}>
-                <NextLink href={section.path}>
+                <NextLink
+                  href={{
+                    pathname: section.path,
+                    query: { customerId: customerId },
+                  }}
+                >
                   <Button
                     disableRipple
                     sx={{
@@ -96,6 +112,7 @@ export const SidebarItem = ({
                       textAlign: "left",
                       textTransform: "none",
                       width: "220px",
+
                       "&:hover": {
                         backgroundColor: "rgba(255,255,255, 0.08)",
                       },

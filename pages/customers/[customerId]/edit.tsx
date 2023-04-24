@@ -46,10 +46,8 @@ const CustomerEdit = ({ customerDetail }) => {
       >
         <Container maxWidth="md">
           <Box sx={{ mb: 4 }}>
-            <NextLink href="/customers" passHref>
-              <Link
-                color="textPrimary"
-                component="a"
+            <NextLink href="/customers" color="textPrimary" passHref>
+              <Box
                 sx={{
                   alignItems: "center",
                   display: "flex",
@@ -57,7 +55,7 @@ const CustomerEdit = ({ customerDetail }) => {
               >
                 <ArrowBackIcon fontSize="small" sx={{ mr: 1 }} />
                 <Typography variant="subtitle2">Customers</Typography>
-              </Link>
+              </Box>
             </NextLink>
           </Box>
           <Box
@@ -96,6 +94,7 @@ const CustomerEdit = ({ customerDetail }) => {
             </div>
           </Box>
           <Box mt={3}>
+            {console.log(customer)}
             <EditForm customer={customer} />
           </Box>
         </Container>

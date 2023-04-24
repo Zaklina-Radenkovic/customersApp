@@ -35,6 +35,9 @@ const AccountButton = () => {
   const anchorRef = useRef(null);
   //@ts-ignore
   const { user } = useCustomerContext();
+  // if (!user) {
+  //   return null;
+  // }
 
   const handleOpenPopover = () => {
     setOpenPopover(true);

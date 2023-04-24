@@ -11,11 +11,12 @@ import { SidebarItem } from "./SidebarItem";
 type DashboardItem = {
   title: string;
   path: string;
+  query: string;
   icon: JSX.Element;
   subsections: [];
 };
 
-const getSections = ({ isAdmin }: { isAdmin?: boolean }): DashboardItem[] =>
+const getMenuItems = ({ isAdmin }: { isAdmin?: boolean }): DashboardItem[] =>
   // @ts-ignore
   [
     {
@@ -35,13 +36,14 @@ const getSections = ({ isAdmin }: { isAdmin?: boolean }): DashboardItem[] =>
         },
         {
           title: "Details",
-          path: `/customers/1`,
-          // query: { customerId: router.query.customerId },
+
+          path: "/customers/[customerId]",
+          query: { customerId: "customerId" },
         },
         {
           title: "Edit",
-          path: `/customers/1/edit`,
-          // query: { customerId: router.query.customerId },
+          path: `/customers/[customerId]/edit`,
+          query: { customerId: "customerId" },
         },
       ],
     },
@@ -71,8 +73,9 @@ type Sidebar = {
 const Sidebar = ({ open, onClose }: Sidebar) => {
   const [initialRenderComplete, setInitialRenderComplete] = useState(false);
   const router = useRouter();
-  // console.log(router);
-  const sections = useMemo(() => getSections({ isAdmin: true }), []);
+  const customerId = router.query.customerId;
+
+  const menuItems = useMemo(() => getMenuItems({ isAdmin: true }), []);
 
   const handlePathChange = () => {
     if (!router.isReady) {
@@ -171,19 +174,22 @@ const Sidebar = ({ open, onClose }: Sidebar) => {
             <div>
               <List>
                 <Box sx={{ flexGrow: 1 }}>
-                  {sections.map((section) => {
-                    return (
-                      <SidebarItem
-                        subsections={section.subsections}
-                        active={section.path === router.pathname}
-                        router={router}
-                        icon={section.icon}
-                        key={section.title}
-                        path={section.path}
-                        title={section.title}
-                      />
-                    );
-                  })}
+                  {menuItems.map((menuItem) => (
+                    // const partialMatch = menuItem.path
+                    //   ? menuItem.path.includes(menuItem.path)
+                    //   : false;
+                    // const exactMatch =
+                    //   menuItem.path.split("?")[0] === menuItem.path;
+
+                    <SidebarItem
+                      active={menuItem.path === router.pathname}
+                      key={menuItem.title}
+                      icon={menuItem.icon}
+                      path={menuItem.path}
+                      title={menuItem.title}
+                      subsections={menuItem.subsections}
+                    />
+                  ))}
                 </Box>
               </List>
             </div>
