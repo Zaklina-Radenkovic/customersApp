@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import NextLink from "next/link";
 import Head from "next/head";
 import { Avatar, Box, Chip, Container, Link, Typography } from "@mui/material";
@@ -8,12 +9,24 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { EditForm } from "../../../src/components/customer/EditForm";
 import { useMounted } from "../../../src/hooks/use-mounted";
-import { collection, doc, getDocs, getDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  DocumentData,
+} from "firebase/firestore";
 import { getInitials } from "../../../src/utils/getInitials";
 import { Customer } from "../../customers";
 import { db } from "../../../src/lib/firebase";
 
-const CustomerEdit = ({ customerDetail }) => {
+// interface iCustomerDetail {
+//   customerData: DocumentData | undefined;
+//   name: string;
+//   avatar: string;
+// }
+
+const CustomerEdit = ({ customerDetail }: any) => {
   const isMounted = useMounted();
   const [customer, setCustomer] = useState<null | Customer>(customerDetail);
   // const customerId = router.query.customerId;
@@ -94,8 +107,16 @@ const CustomerEdit = ({ customerDetail }) => {
             </div>
           </Box>
           <Box mt={3}>
-            {console.log(customer)}
-            <EditForm customer={customer} />
+            <EditForm
+              customer={customer}
+              address={""}
+              email={""}
+              phone={""}
+              name={""}
+              id={""}
+              avatar={null}
+              photoURL={null}
+            />
           </Box>
         </Container>
       </Box>
@@ -105,7 +126,7 @@ const CustomerEdit = ({ customerDetail }) => {
 
 export default CustomerEdit;
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const userData = await getDocs(collection(db, "customers"));
   // @ts-ignore
   const paths = userData.docs.map((customer) => ({
@@ -118,8 +139,9 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps = async (context) => {
-  let id = context?.params.customerId;
+export const getStaticProps: GetStaticProps = async (context) => {
+  let id = context.params!.customerId;
+  // @ts-ignore
   const customerRef = doc(db, "customers", id);
   const customerSnap = await getDoc(customerRef);
   // const customerDetail = customerSnap.data();

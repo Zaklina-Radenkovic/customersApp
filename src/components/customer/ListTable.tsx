@@ -169,7 +169,7 @@ export const ListTable = ({
                           href={`/customers/${customer.id}`}
                           passHref
                           color="inherit"
-                          variant="subtitle2"
+                          // variant="subtitle2"
                         >
                           {/* <Link color="inherit" variant="subtitle2"> */}
                           {customer.name}

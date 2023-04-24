@@ -24,6 +24,8 @@ type iCustomerEditFormProps = {
   phone: string;
   name: string;
   id: string;
+  avatar: string | null;
+  photoURL: string | null;
 };
 
 export const EditForm = (
@@ -33,10 +35,15 @@ export const EditForm = (
   // console.log(customer.name);
   const formik = useFormik({
     initialValues: {
+      // @ts-ignore
       name: customer.name || "",
+      // @ts-ignore
       email: customer.email || "",
+      // @ts-ignore
       address: customer.address || "",
+      // @ts-ignore
       phone: customer.phone || "",
+      // @ts-ignore
       id: customer.id || "",
       submit: null,
     },
@@ -59,6 +66,7 @@ export const EditForm = (
         phone: values.phone,
       };
       // const email = values.email;
+      // @ts-ignore
       const id = customer.id;
       // const name = values.name;
       // const address = values.address;
@@ -85,6 +93,7 @@ export const EditForm = (
         console.error(err);
         toast.error("Something went wrong!");
         helpers.setStatus({ success: false });
+        // @ts-ignore
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
@@ -133,7 +142,7 @@ export const EditForm = (
                 value={formik.values.address}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                helperText={formik.touched.address && formik.errors.address}
+                // helperText={formik.touched.address && formik.errors.address}
                 error={Boolean(formik.touched.address && formik.errors.address)}
               />
             </Grid>
@@ -142,7 +151,7 @@ export const EditForm = (
               <TextField
                 error={Boolean(formik.touched.phone && formik.errors.phone)}
                 fullWidth
-                helperText={formik.touched.phone && formik.errors.phone}
+                // helperText={formik.touched.phone && formik.errors.phone}
                 label="Phone number"
                 // name="phone"
                 value={formik.values.phone}
@@ -166,7 +175,12 @@ export const EditForm = (
           >
             Update
           </Button>
-          <NextLink href={`/customers/${customer.id}`} passHref>
+
+          <NextLink
+            // @ts-ignore
+            href={`/customers/${customer?.id}`}
+            passHref
+          >
             <Button
               variant="outlined"
               disabled={formik.isSubmitting}
@@ -183,7 +197,8 @@ export const EditForm = (
             disabled={formik.isSubmitting}
             //disabled={!dirty}
             onClick={() => {
-              deleteCustomer(customer.id);
+              // @ts-ignore
+              deleteCustomer(customer?.id);
               toast.success("Customer successfully deleted");
               formik.resetForm({
                 values: {

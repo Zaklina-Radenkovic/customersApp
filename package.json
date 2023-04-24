@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.14",
+    "@vercel/analytics": "^1.0.0",
     "firebase": "^9.19.1",
     "formik": "^2.2.9",
     "next": "13.2.4",

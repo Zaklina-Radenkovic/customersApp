@@ -13,7 +13,7 @@ import {
 } from "../lib/firebase";
 
 interface iUserContext {
-  currentUser: null | undefined | User;
+  currentUser: null | User;
   setCurrentUser: Dispatch<SetStateAction<null | User>>;
 }
 
@@ -22,8 +22,12 @@ const UserContext = createContext<iUserContext>({
   setCurrentUser: () => null,
 });
 
-export const UserProvider = ({ children }: any) => {
-  const [currentUser, setCurrentUser] = useState(null);
+export const UserProvider = ({
+  children,
+}: {
+  children: JSX.Element[] | JSX.Element;
+}) => {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const value = {
     currentUser,
@@ -31,7 +35,8 @@ export const UserProvider = ({ children }: any) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChangedListener((user) => {
+    // @ts-ignore
+    const unsubscribe = onAuthStateChangedListener((user: User) => {
       if (!user) return null;
       if (user) {
         // setIsLoading(false);

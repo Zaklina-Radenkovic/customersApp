@@ -1,12 +1,16 @@
 import { createContext, useState, useEffect, useContext } from "react";
 
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, getFirestore, DocumentData } from "firebase/firestore";
 import { useUserContext } from "./UserContext";
 
 export const CustomerContext = createContext({});
 
-export const CustomerProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+export const CustomerProvider = ({
+  children,
+}: {
+  children: JSX.Element[] | JSX.Element;
+}) => {
+  const [user, setUser] = useState<DocumentData | undefined | null>(null);
   const [isLogin, setIsLogin] = useState(false);
   const { currentUser } = useUserContext();
 

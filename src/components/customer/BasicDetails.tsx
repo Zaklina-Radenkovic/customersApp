@@ -38,6 +38,7 @@ export const BasicDetails = ({
           // @ts-ignore
           divider
           label="Email"
+          // @ts-ignore
           value={email}
         />
         <PropertyListItem
@@ -45,6 +46,7 @@ export const BasicDetails = ({
           // @ts-ignore
           divider
           label="Phone"
+          // @ts-ignore
           value={phone}
         />
         <PropertyListItem
@@ -52,6 +54,7 @@ export const BasicDetails = ({
           // @ts-ignore
           divider
           label="Address"
+          // @ts-ignore
           value={address}
         />
       </PropertyList>

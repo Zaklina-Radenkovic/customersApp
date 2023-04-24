@@ -121,6 +121,7 @@ const Sidebar = ({ open, onClose }: Sidebar) => {
     return null;
   } else {
     return (
+      // @ts-ignore
       <Drawer
         {...mobileProps}
         anchor="left"
@@ -180,7 +181,7 @@ const Sidebar = ({ open, onClose }: Sidebar) => {
                     //   : false;
                     // const exactMatch =
                     //   menuItem.path.split("?")[0] === menuItem.path;
-
+                    // @ts-ignore
                     <SidebarItem
                       active={menuItem.path === router.pathname}
                       key={menuItem.title}

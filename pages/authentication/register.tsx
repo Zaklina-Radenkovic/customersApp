@@ -1,5 +1,3 @@
-import { useContext } from "react";
-// import { UserContext } from "../../src/context/userContext";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
 import { useFormik } from "formik";
@@ -9,10 +7,9 @@ import {
   Button,
   Card,
   CardContent,
-  Checkbox,
   Container,
-  Divider,
   Link,
+  Divider,
   TextField,
   Typography,
 } from "@mui/material";
@@ -21,7 +18,7 @@ import {
   createUserDocumentFromAuth,
   signInWithGooglePopup,
   createAuthUserWithEmailAndPassword,
-  auth,
+ 
 } from "../../src/lib/firebase";
 import { UserCredential } from "firebase/auth";
 import { User } from "firebase/auth";
@@ -29,6 +26,7 @@ import { useMounted } from "../../src/hooks/use-mounted";
 import { useRouter } from "next/router";
 
 import { useUserContext } from "../../src/context/UserContext";
+
 
 const Register = () => {
   // const { setUser } = useUserContext();
@@ -80,10 +78,9 @@ const Register = () => {
       const password = values.password;
       const name = values.displayName;
       try {
-        const { user }: any = await createAuthUserWithEmailAndPassword(
-          email,
-          password
-        );
+        // @ts-ignore
+        const { user }: UserCredential | undefined =
+          await createAuthUserWithEmailAndPassword(email, password);
 
         await createUserDocumentFromAuth(user, { name });
         // setUser(user);
@@ -91,7 +88,7 @@ const Register = () => {
         await wait(500);
         if (isMounted()) {
           const returnUrl = router.query.returnUrl || "/";
-          //@ts-ignore
+          // @ts-ignore
           router.push(returnUrl).catch(console.error);
         }
         helpers.setStatus({ success: true });

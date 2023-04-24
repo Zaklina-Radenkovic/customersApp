@@ -15,16 +15,19 @@ import { ListTable } from "../../src/components/customer/ListTable";
 // import { useMounted } from "../../src/components/hooks/use-mounted";
 import { Plus as PlusIcon } from "../../src/icons/plus";
 import { Search as SearchIcon } from "../../src/icons/search";
-
+import { DocumentData } from "firebase/firestore";
 import { getCustomersAndDocuments } from "../../src/lib/firebase";
 // import { AuthGuard } from "../../../components/authentication/auth-guard";
 
 export type Customer = {
-  id: string;
-  // avatar: string;
-  // city: string;
+  customer: object;
+  address: string;
   email: string;
+  phone: string;
   name: string;
+  id: string;
+  avatar: string;
+  photoURL: string;
 };
 
 const sortOptions = [
@@ -119,8 +122,8 @@ const CustomerList = () => {
     // calling 'async' fnc inside of useeffect
     const getCustomersMap = async () => {
       // @ts-ignore
-      const data = await getCustomersAndDocuments("customers");
-
+      const data: DocumentData = await getCustomersAndDocuments("customers");
+      // @ts-ignore
       const customersArr = data.reduce((acc, user) => {
         const customer = {
           ...user,

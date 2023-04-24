@@ -21,7 +21,7 @@ import {
   signInAuthUserWithEmailAndPassword,
   auth,
 } from "../../src/lib/firebase";
-// import { UserContext } from "../../src/context/userContext";
+
 import { useMounted } from "../../src/hooks/use-mounted";
 import { useUserContext } from "../../src/context/UserContext";
 

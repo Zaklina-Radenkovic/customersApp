@@ -10,8 +10,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  updateCurrentUser,
-  updateProfile,
 } from "firebase/auth";
 //getting & setting data on doc
 import {
@@ -24,18 +22,18 @@ import {
   query,
   collection,
   updateDoc,
-  writeBatch,
+  DocumentData,
 } from "firebase/firestore";
-// import { User } from "firebase/auth";
+import { User } from "firebase/auth";
 
-type User = {
-  displayName: string;
-  uid: string;
-  email: string;
-  photoURL: string;
-  address: string;
-  phoneNumber: number;
-};
+// type User = {
+//   displayName: string;
+//   uid: string;
+//   email: string;
+//   photoURL: string;
+//   address: string;
+//   phoneNumber: number;
+// };
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -80,8 +78,9 @@ export const createUserDocumentFromAuth = async (
 
   //   if data doesn`t exist we want to create, set
   if (!userSnapshot.exists()) {
-    const { displayName, email, photoURL, uid, address, phoneNumber }: User =
-      userAuth;
+    // const { displayName, email, photoURL, uid, address, phoneNumber }: User =
+    //   userAuth;
+    const { displayName, email, photoURL } = userAuth;
     const createdAt = new Date();
 
     try {
@@ -89,9 +88,7 @@ export const createUserDocumentFromAuth = async (
         name: displayName,
         email,
         photoURL,
-        // address,
-        // phoneNumber,
-        id: uid,
+        id: userAuth.uid,
         createdAt: JSON.parse(JSON.stringify(createdAt)),
         ...additionalInformation,
       });
@@ -103,6 +100,7 @@ export const createUserDocumentFromAuth = async (
   return userDocRef;
 };
 
+//////////////////////////////////////////////
 export const createAuthUserWithEmailAndPassword = async (
   email: string,
   password: string
@@ -111,6 +109,7 @@ export const createAuthUserWithEmailAndPassword = async (
   return await createUserWithEmailAndPassword(auth, email, password);
 };
 
+///////////////////////////////////////////////
 export const signInAuthUserWithEmailAndPassword = async (
   email: string,
   password: string
@@ -119,12 +118,14 @@ export const signInAuthUserWithEmailAndPassword = async (
   return await signInWithEmailAndPassword(auth, email, password);
 };
 
+//////////////////////////////////////////////
 export const signOutUser = async () => await signOut(auth);
 
+//////////////////////////////////////////////
 export const onAuthStateChangedListener = (callback: () => void) =>
   onAuthStateChanged(auth, callback);
 
-//reading customers
+////////   reading customers   ////////////////
 export const getCustomersAndDocuments = async () => {
   //we want collectionRef of 'categories'
   const collectionRef = collection(db, "customers");
@@ -138,8 +139,11 @@ export const getCustomersAndDocuments = async () => {
 
   // querySnapshot.docs.reduce(()=>{},{}) we need obj at the end
   const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
-    const data = docSnapshot.data();
-    acc.push(data);
+    const data: DocumentData = docSnapshot.data();
+    if (data) {
+      // @ts-ignore
+      acc.push(data);
+    }
     return acc;
   }, []);
   // console.log(categoryMap);
@@ -166,7 +170,7 @@ export const updateCustomer = async (id: User["uid"], data = {}) => {
   });
 };
 
-//delete User
+////////////////    delete User   ///////////////
 export const deleteCustomer = async (id: string) => {
   const customerDoc = doc(db, "customers", id);
   return await deleteDoc(customerDoc);
