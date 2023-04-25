@@ -6,7 +6,7 @@ type OverviewBannerType = {
 };
 
 const Banner = ({ onDismiss, ...other }: OverviewBannerType) => {
-  const { user } = useUserContext();
+  // const { user } = useUserContext();
 
   return (
     <Card
@@ -28,7 +28,7 @@ const Banner = ({ onDismiss, ...other }: OverviewBannerType) => {
           <Chip color="secondary" label="New" />
         </div> */}
         <Typography color="inherit" sx={{ mt: 2 }} variant="h4">
-          welcome, {user?.displayName}!
+          {/* welcome, {user?.displayName}! */}
         </Typography>
         <Typography color="inherit" sx={{ mt: 1 }} variant="subtitle2">
           selectExercise
