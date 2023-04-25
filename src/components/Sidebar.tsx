@@ -53,10 +53,10 @@ const getMenuItems = ({ isAdmin }: { isAdmin?: boolean }): DashboardItem[] =>
       path: "/authentication",
       icon: <LockClosedIcon fontSize="small" />,
       subsections: [
-        {
-          title: "Register",
-          path: "/authentication/register",
-        },
+        // {
+        //   title: "Register",
+        //   path: "/authentication/register",
+        // },
         {
           title: "Login",
           path: "/authentication/login",
