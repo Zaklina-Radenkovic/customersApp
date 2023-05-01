@@ -19,6 +19,7 @@ import { useFormik } from "formik";
 
 import { updateCustomer } from "../../lib/firebase";
 import { useCustomerContext } from "../../context/CustomerContext";
+import { DeleteModal } from "../DeleteModal";
 import { User } from "firebase/auth";
 import { Customer } from "../../../pages/customers";
 
@@ -27,7 +28,7 @@ export const GeneralSettings = (props: any) => {
   const { user } = useCustomerContext();
   console.log(user);
   const [isEditing, setIsEditing] = useState(false);
-
+  const [modalIsVisible, setModalIsVisible] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email);
   // const [image, setImage] = useState(user?.photoURL);
@@ -43,24 +44,13 @@ export const GeneralSettings = (props: any) => {
   const handleEdit = () => {
     setIsEditing(!isEditing);
   };
-  // const handleChange = useCallback(
-  //   (e) => {
-  //     setName(e.target.value);
-  //   },
-  //   [name]
-  // );
-  // const [userState, setUserState] = useState({
-  //   name: user?.name,
-  //   email: user?.email,
-  //   // image: user?.photoURL,
-  // });
+  const openModalHandler = () => {
+    setModalIsVisible(true);
+  };
 
-  // const handleUserChange = (e) => {
-  //   setUserState((prevState) => ({
-  //     ...prevState,
-  //     [e.target.name]: e.target.value,
-  //   }));
-  // };
+  const closeModalHandler = () => {
+    setModalIsVisible(false);
+  };
 
   const SUPPORTED_FORMATS = [
     "image/jpg",
@@ -279,7 +269,7 @@ export const GeneralSettings = (props: any) => {
         </CardContent>
       </Card>
 
-      <Card sx={{ mt: 4 }}>
+      {/* <Card sx={{ mt: 4 }}>
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={4} xs={12}>
@@ -409,7 +399,7 @@ export const GeneralSettings = (props: any) => {
             </Grid>
           </Grid>
         </CardContent>
-      </Card>
+      </Card> */}
 
       <Card sx={{ mt: 4 }}>
         <CardContent>
@@ -422,13 +412,24 @@ export const GeneralSettings = (props: any) => {
                 Delete your account and all of your source data. This is
                 irreversible.
               </Typography>
-              <Button color="error" variant="outlined">
+              <Button
+                color="error"
+                variant="outlined"
+                onClick={openModalHandler}
+              >
                 Delete account
               </Button>
             </Grid>
           </Grid>
         </CardContent>
       </Card>
+      {modalIsVisible ? (
+        <DeleteModal
+          open={modalIsVisible}
+          onClose={closeModalHandler}
+          id={user?.id}
+        />
+      ) : null}
     </Box>
   );
 };
