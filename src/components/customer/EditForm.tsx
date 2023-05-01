@@ -1,8 +1,8 @@
 import NextLink from "next/link";
-// import { useFormikContext } from "formik";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
-import { useFormik, useFormikContext } from "formik";
+import { useFormik } from "formik";
 import {
   Box,
   Button,
@@ -32,6 +32,8 @@ export const EditForm = (
   { customer }: iCustomerEditFormProps,
   ...other: any
 ) => {
+  const router = useRouter();
+
   // console.log(customer.name);
   const formik = useFormik({
     initialValues: {
@@ -89,6 +91,7 @@ export const EditForm = (
             submit: null,
           },
         });
+        router.push("/customers");
       } catch (err) {
         console.error(err);
         toast.error("Something went wrong!");
@@ -149,14 +152,14 @@ export const EditForm = (
 
             <Grid item md={6} xs={12}>
               <TextField
-                error={Boolean(formik.touched.phone && formik.errors.phone)}
                 fullWidth
                 // helperText={formik.touched.phone && formik.errors.phone}
                 label="Phone number"
-                // name="phone"
+                name="phone"
                 value={formik.values.phone}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
+                error={Boolean(formik.touched.phone && formik.errors.phone)}
               />
             </Grid>
           </Grid>

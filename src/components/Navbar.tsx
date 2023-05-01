@@ -16,7 +16,7 @@ import { useCustomerContext } from "../context/CustomerContext";
 
 const NavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  //why '...'
+
   ...(theme.palette.mode === "light"
     ? {
         boxShadow: theme.shadows[3],
@@ -35,9 +35,7 @@ const AccountButton = () => {
   const anchorRef = useRef(null);
   //@ts-ignore
   const { user } = useCustomerContext();
-  // if (!user) {
-  //   return null;
-  // }
+  // console.log(user);
 
   const handleOpenPopover = () => {
     setOpenPopover(true);

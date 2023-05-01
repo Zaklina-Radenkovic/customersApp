@@ -58,7 +58,7 @@ export const BasicDetails = ({
           value={address}
         />
       </PropertyList>
-      <CardActions
+      {/* <CardActions
         sx={{
           flexWrap: "wrap",
           px: 3,
@@ -70,7 +70,7 @@ export const BasicDetails = ({
           Reset &amp; Send Password
         </Button>
         <Button sx={{ m: 1 }}>Login as Customer</Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 };

@@ -13,18 +13,18 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { wait } from "../utils/wait";
+import { wait } from "../../src/utils/wait";
 import {
   createUserDocumentFromAuth,
   signInWithGooglePopup,
   createAuthUserWithEmailAndPassword,
-} from "../lib/firebase";
+} from "../../src/lib/firebase";
 import { UserCredential } from "firebase/auth";
 import { User } from "firebase/auth";
-import { useMounted } from "../hooks/use-mounted";
+import { useMounted } from "../../src/hooks/use-mounted";
 import { useRouter } from "next/router";
 
-import { useUserContext } from "../context/UserContext";
+import { useUserContext } from "../../src/context/UserContext";
 
 const Register = () => {
   // const { setUser } = useUserContext();

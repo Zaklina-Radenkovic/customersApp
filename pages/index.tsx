@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import {
   Box,
@@ -15,21 +16,21 @@ import {
   Typography,
 } from "@mui/material";
 import Banner from "../src/components/Banner";
-import Register from "../src/components/register";
 
 const Home: NextPage = () => {
   const [displayBanner, setDisplayBanner] = useState(true);
-
+  const router = useRouter();
   const handleDismissBanner = () => {
     // Update the persistent state
-    // globalThis.sessionStorage.setItem('dismiss-banner', 'true');
+    globalThis.sessionStorage.setItem("dismiss-banner", "true");
     setDisplayBanner(false);
+    router.push("/customers");
   };
 
   return (
     <>
       <Head>
-        <title>Dashboard: Overview | Material Kit Pro</title>
+        <title>CustomList </title>
       </Head>
       <Box
         component="main"
@@ -38,12 +39,11 @@ const Home: NextPage = () => {
           py: 8,
         }}
       >
-        {/* {displayBanner && (
+        {displayBanner && (
           <Box sx={{ mx: 3, mb: 6 }}>
             <Banner onDismiss={handleDismissBanner} />
           </Box>
-        )} */}
-        <Register />
+        )}
       </Box>
     </>
   );

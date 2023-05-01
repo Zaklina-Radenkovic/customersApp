@@ -1,12 +1,13 @@
-import { Box, Button, Card, Chip, Typography } from "@mui/material";
-import { useUserContext } from "../context/UserContext";
+import { Box, Button, Card, Typography } from "@mui/material";
+
+import { useCustomerContext } from "../context/CustomerContext";
 
 type OverviewBannerType = {
   onDismiss: () => void;
 };
 
 const Banner = ({ onDismiss, ...other }: OverviewBannerType) => {
-  // const { user } = useUserContext();
+  const { user } = useCustomerContext();
 
   return (
     <Card
@@ -24,15 +25,12 @@ const Banner = ({ onDismiss, ...other }: OverviewBannerType) => {
       {...other}
     >
       <div>
-        {/* <div>
-          <Chip color="secondary" label="New" />
-        </div> */}
         <Typography color="inherit" sx={{ mt: 2 }} variant="h4">
-          {/* welcome, {user?.displayName}! */}
+          {user?.name
+            ? `Welcome to CustomList, ${user?.name}!`
+            : `Welcome to CustomList!`}
         </Typography>
-        <Typography color="inherit" sx={{ mt: 1 }} variant="subtitle2">
-          selectExercise
-        </Typography>
+
         <Box sx={{ mt: 2 }}>
           <Button color="secondary" onClick={onDismiss} variant="contained">
             Dismiss Banner

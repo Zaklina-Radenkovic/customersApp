@@ -122,8 +122,8 @@ export const ListTable = ({
               </TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
-              {/* <TableCell>Location</TableCell> */}
-
+              <TableCell>Location</TableCell>
+              <TableCell>Phone Number</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -183,22 +183,25 @@ export const ListTable = ({
                       {customer.email}
                     </Typography>
                   </TableCell>
-                  {/* <TableCell>
-                    {`${customer.city},  ${customer.country}`}
-                  </TableCell> */}
+                  <TableCell>
+                    <Typography color="textSecondary" variant="body2">
+                      {customer.address ? customer.address : "No address"}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography color="textSecondary" variant="body2">
+                      {customer.phone ? customer.phone : "No phone"}
+                    </Typography>
+                  </TableCell>
 
                   <TableCell align="right">
                     <NextLink href={`/customers/${customer.id}/edit`} passHref>
-                      <IconButton
-                      //  component="a"
-                      >
+                      <IconButton>
                         <PencilAltIcon fontSize="small" />
                       </IconButton>
                     </NextLink>
                     <NextLink href={`/customers/${customer.id}`} passHref>
-                      <IconButton
-                      // component="a"
-                      >
+                      <IconButton>
                         <ArrowRightIcon fontSize="small" />
                       </IconButton>
                     </NextLink>

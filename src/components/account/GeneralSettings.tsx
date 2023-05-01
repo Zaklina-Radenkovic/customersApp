@@ -11,7 +11,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
+import toast from "react-hot-toast";
+import { wait } from "../../utils/wait";
 import { UserCircle as UserCircleIcon } from "../../icons/user-circle";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -24,12 +25,24 @@ import { Customer } from "../../../pages/customers";
 export const GeneralSettings = (props: any) => {
   // @ts-ignore
   const { user } = useCustomerContext();
-  // console.log(user);
+  console.log(user);
   const [isEditing, setIsEditing] = useState(false);
-  // const [name, setName] = useState("");
-  // const [email, setEmail] = useState(user?.email);
+
+  const [name, setName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email);
   // const [image, setImage] = useState(user?.photoURL);
 
+  const handleNameChange = () => {
+    setName(formik1.values.name);
+  };
+
+  const handleEmailChange = () => {
+    setEmail(formik1.values.email);
+  };
+
+  const handleEdit = () => {
+    setIsEditing(!isEditing);
+  };
   // const handleChange = useCallback(
   //   (e) => {
   //     setName(e.target.value);
@@ -58,9 +71,10 @@ export const GeneralSettings = (props: any) => {
   const formik1 = useFormik({
     initialValues: {
       image: user?.photoURL || "",
-      name: user?.name || "",
-      email: user?.email || "",
+      name: name,
+      email: email,
       id: user?.id || "",
+      submit: null,
     },
     validationSchema: Yup.object({
       image: Yup.mixed().nullable(),
@@ -84,6 +98,7 @@ export const GeneralSettings = (props: any) => {
     }),
     onSubmit: async (values, helpers) => {
       const data = {
+        image: values.image,
         email: values.email,
         name: values.name,
       };
@@ -92,11 +107,11 @@ export const GeneralSettings = (props: any) => {
 
       try {
         await updateCustomer(id, data);
-        // await wait(500);
+        await wait(500);
         console.log(values);
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
-        // toast.success("Customer updated!");
+        toast.success("Customer updated!");
       } catch (err) {
         console.error(err);
         // toast.error("Something went wrong!");
@@ -201,11 +216,14 @@ export const GeneralSettings = (props: any) => {
                     }}
                     name="name"
                     label="Full Name"
+                    // value={user?.name}
                     value={formik1.values.name}
+                    onBlur={formik1.handleBlur}
                     onChange={formik1.handleChange}
                     error={Boolean(formik1.touched.name && formik1.errors.name)}
                     // helperText={formik1.touched.name && formik1.errors.name}
                   />
+                  <Button onClick={handleNameChange}>Save</Button>
                 </Box>
                 <Box
                   sx={{
@@ -215,12 +233,13 @@ export const GeneralSettings = (props: any) => {
                   }}
                 >
                   <TextField
+                    disabled={!isEditing}
                     sx={{
                       flexGrow: 1,
                       mr: 3,
                       ...(!isEditing && {
                         "& .MuiOutlinedInput-notchedOutline": {
-                          borderStyle: "dotted",
+                          borderStyle: "dashed",
                         },
                       }),
                     }}
@@ -231,13 +250,21 @@ export const GeneralSettings = (props: any) => {
                     }}
                     size="small"
                     required
+                    // value={user?.email}
                     value={formik1.values.email}
+                    onBlur={formik1.handleBlur}
                     onChange={formik1.handleChange}
                     error={Boolean(
                       formik1.touched.email && formik1.errors.email
                     )}
                     // helperText={formik1.touched.email && formik1.errors.email}
                   />
+                  {/* {!user.email ? (<Button onClick={handleEmailChange}></Button>)} */}
+                  <Button
+                    onClick={!user?.email ? handleEmailChange : handleEdit}
+                  >
+                    {isEditing ? "Save" : "Edit"}
+                  </Button>
                 </Box>
                 <Button
                   sx={{ mt: 4 }}
