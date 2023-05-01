@@ -7,6 +7,7 @@ type OverviewBannerType = {
 };
 
 const Banner = ({ onDismiss, ...other }: OverviewBannerType) => {
+  // @ts-ignore
   const { user } = useCustomerContext();
 
   return (
