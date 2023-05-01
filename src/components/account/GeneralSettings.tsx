@@ -216,7 +216,6 @@ export const GeneralSettings = (props: any) => {
                     }}
                     name="name"
                     label="Full Name"
-                    // value={user?.name}
                     value={formik1.values.name}
                     onBlur={formik1.handleBlur}
                     onChange={formik1.handleChange}
@@ -250,7 +249,6 @@ export const GeneralSettings = (props: any) => {
                     }}
                     size="small"
                     required
-                    // value={user?.email}
                     value={formik1.values.email}
                     onBlur={formik1.handleBlur}
                     onChange={formik1.handleChange}
@@ -259,7 +257,7 @@ export const GeneralSettings = (props: any) => {
                     )}
                     // helperText={formik1.touched.email && formik1.errors.email}
                   />
-                  {/* {!user.email ? (<Button onClick={handleEmailChange}></Button>)} */}
+
                   <Button
                     onClick={!user?.email ? handleEmailChange : handleEdit}
                   >
