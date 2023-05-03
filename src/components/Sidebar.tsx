@@ -29,23 +29,23 @@ const getMenuItems = ({ isAdmin }: { isAdmin?: boolean }): DashboardItem[] =>
       title: "Customers",
       path: "/customers",
       icon: <UsersIcon fontSize="small" />,
-      // subsections: [
-      //   {
-      //     title: "List",
-      //     path: "/customers",
-      //   },
-      //   {
-      //     title: "Details",
+      subsections: [
+        {
+          title: "List",
+          path: "/customers",
+        },
+        {
+          title: "Details",
 
-      //     path: "/customers/[customerId]",
-      //     query: { customerId: "customerId" },
-      //   },
-      //   {
-      //     title: "Edit",
-      //     path: `/customers/[customerId]/edit`,
-      //     query: { customerId: "customerId" },
-      //   },
-      // ],
+          path: "/customers/[customerId]",
+          query: { customerId: "customerId" },
+        },
+        {
+          title: "Edit",
+          path: `/customers/[customerId]/edit`,
+          query: { customerId: "customerId" },
+        },
+      ],
     },
 
     isAdmin && {
