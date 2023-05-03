@@ -42,12 +42,12 @@ const Register = () => {
       const { user } = await signInWithGooglePopup();
 
       await createUserDocumentFromAuth(user);
-      setIsLoading(true);
+      // setIsLoading(true);
 
       //zasto se stavlja ovde?
       // before performing an action
       await wait(500);
-      setIsLoading(false);
+      // setIsLoading(false);
       if (isMounted()) {
         const returnUrl = router.query.returnUrl || "/";
         //@ts-ignore
@@ -80,7 +80,7 @@ const Register = () => {
       const password = values.password;
       const name = values.displayName;
       try {
-        setIsLoading(true);
+        // setIsLoading(true);
         // @ts-ignore
         const { user }: UserCredential | undefined =
           await createAuthUserWithEmailAndPassword(email, password);
@@ -94,7 +94,7 @@ const Register = () => {
           // @ts-ignore
           router.push(returnUrl).catch(console.error);
         }
-        setIsLoading(false);
+        // setIsLoading(false);
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
         toast.success("You are registered!");

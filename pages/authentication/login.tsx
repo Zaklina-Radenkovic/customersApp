@@ -36,7 +36,7 @@ const Login = () => {
     try {
       const { user } = await signInWithGooglePopup();
 
-      setIsLoading(true);
+      // setIsLoading(true);
       // if (auth.currentUser !== user) {
       await wait(500);
       if (isMounted()) {
@@ -44,8 +44,8 @@ const Login = () => {
         //@ts-ignore
         router.push(returnUrl).catch(console.error);
         toast.success("You are logged in!");
-        setIsLoading(false);
       }
+      // setIsLoading(false);
       // }
       // if (auth.currentUser === user) {
       //   toast.error("You are already logged in! Continue browsing the App :)");
@@ -78,7 +78,7 @@ const Login = () => {
           email,
           password
         );
-        setIsLoading(true);
+        // setIsLoading(true);
 
         // if (auth.currentUser !== user) {
         await wait(500);
@@ -93,7 +93,7 @@ const Login = () => {
         // setUser(user);
         // console.log(user);
         toast.success(`You are logged in as ${user?.email}!`);
-        setIsLoading(false);
+        // setIsLoading(false);
         if (isMounted()) {
           const returnUrl = router.query.returnUrl || "/";
           //@ts-ignore
@@ -125,9 +125,9 @@ const Login = () => {
     },
   });
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  // if (isLoading) {
+  //   return <Spinner />;
+  // }
 
   return (
     <>

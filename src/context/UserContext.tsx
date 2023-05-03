@@ -23,7 +23,7 @@ interface iUserContext {
 const UserContext = createContext<iUserContext>({
   currentUser: null,
   setCurrentUser: () => null,
-  isLoading: true || false,
+  isLoading: false,
   setIsLoading: boolean,
 });
 
@@ -47,13 +47,13 @@ export const UserProvider = ({
     const unsubscribe = onAuthStateChangedListener((user: User) => {
       if (!user) return null;
       if (user) {
-        setIsLoading(true);
+        // setIsLoading(true);
 
         createUserDocumentFromAuth(user);
       }
       setCurrentUser(user);
       console.log(user);
-      setIsLoading(false);
+      // setIsLoading(false);
     });
     return unsubscribe;
   }, []);
