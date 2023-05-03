@@ -15,6 +15,12 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/scrollbar.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "src/scrollbar.js",
+    "src/components/LinearDeterminate.js"
+  ],
   "exclude": ["node_modules"]
 }

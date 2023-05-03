@@ -14,6 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Spinner from "../../src/components/Spinner";
 import { wait } from "../../src/utils/wait";
 import { useRouter } from "next/router";
 import {
@@ -26,7 +27,7 @@ import { useMounted } from "../../src/hooks/use-mounted";
 import { useUserContext } from "../../src/context/UserContext";
 
 const Login = () => {
-  // const { setUser } = useUserContext();
+  const { isLoading, setIsLoading } = useUserContext();
 
   const isMounted = useMounted();
   const router = useRouter();
@@ -35,7 +36,7 @@ const Login = () => {
     try {
       const { user } = await signInWithGooglePopup();
 
-      // setIsLogin(true);
+      setIsLoading(true);
       // if (auth.currentUser !== user) {
       await wait(500);
       if (isMounted()) {
@@ -43,6 +44,7 @@ const Login = () => {
         //@ts-ignore
         router.push(returnUrl).catch(console.error);
         toast.success("You are logged in!");
+        setIsLoading(false);
       }
       // }
       // if (auth.currentUser === user) {
@@ -76,7 +78,7 @@ const Login = () => {
           email,
           password
         );
-        // setIsLogin(true);
+        setIsLoading(true);
 
         // if (auth.currentUser !== user) {
         await wait(500);
@@ -91,7 +93,7 @@ const Login = () => {
         // setUser(user);
         // console.log(user);
         toast.success(`You are logged in as ${user?.email}!`);
-
+        setIsLoading(false);
         if (isMounted()) {
           const returnUrl = router.query.returnUrl || "/";
           //@ts-ignore
@@ -122,6 +124,10 @@ const Login = () => {
       }
     },
   });
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <>

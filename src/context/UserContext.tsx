@@ -11,15 +11,20 @@ import {
   onAuthStateChangedListener,
   createUserDocumentFromAuth,
 } from "../lib/firebase";
+import { boolean } from "yup";
 
 interface iUserContext {
   currentUser: null | User;
   setCurrentUser: Dispatch<SetStateAction<null | User>>;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 const UserContext = createContext<iUserContext>({
   currentUser: null,
   setCurrentUser: () => null,
+  isLoading: true || false,
+  setIsLoading: boolean,
 });
 
 export const UserProvider = ({
@@ -28,10 +33,13 @@ export const UserProvider = ({
   children: JSX.Element[] | JSX.Element;
 }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const value = {
     currentUser,
     setCurrentUser,
+    isLoading,
+    setIsLoading,
   };
 
   useEffect(() => {
@@ -39,13 +47,13 @@ export const UserProvider = ({
     const unsubscribe = onAuthStateChangedListener((user: User) => {
       if (!user) return null;
       if (user) {
-        // setIsLoading(false);
+        setIsLoading(true);
 
         createUserDocumentFromAuth(user);
       }
       setCurrentUser(user);
       console.log(user);
-      // setIsLoading(false);
+      setIsLoading(false);
     });
     return unsubscribe;
   }, []);
