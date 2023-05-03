@@ -10,8 +10,9 @@ import { User } from "firebase/auth";
 import {
   onAuthStateChangedListener,
   createUserDocumentFromAuth,
+  addCollectionAndDocuments,
 } from "../lib/firebase";
-import { boolean } from "yup";
+import { CUSTOMERS_DATA } from "../_fake-api__/customers";
 
 interface iUserContext {
   currentUser: null | User;
@@ -24,7 +25,7 @@ const UserContext = createContext<iUserContext>({
   currentUser: null,
   setCurrentUser: () => null,
   isLoading: false,
-  setIsLoading: boolean,
+  setIsLoading: () => true,
 });
 
 export const UserProvider = ({
@@ -34,6 +35,10 @@ export const UserProvider = ({
 }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  // // this we add ONLY ONCE (the first time), because every time will add new sets of value
+  // useEffect(() => {
+  //   addCollectionAndDocuments("customers", CUSTOMERS_DATA);
+  // });
 
   const value = {
     currentUser,

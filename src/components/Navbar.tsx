@@ -35,7 +35,7 @@ const AccountButton = () => {
   const anchorRef = useRef(null);
   //@ts-ignore
   const { user } = useCustomerContext();
-  // console.log(user);
+  console.log(user);
 
   const handleOpenPopover = () => {
     setOpenPopover(true);
@@ -62,7 +62,7 @@ const AccountButton = () => {
             height: 40,
             width: 40,
           }}
-          src={user?.photoURL || ""}
+          src={user?.photoURL || user?.avatar || ""}
         >
           {/* TODO: when user is sign out how to remove photo */}
           {user === null ? (

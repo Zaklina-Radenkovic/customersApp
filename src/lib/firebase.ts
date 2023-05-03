@@ -23,6 +23,7 @@ import {
   collection,
   updateDoc,
   DocumentData,
+  writeBatch,
 } from "firebase/firestore";
 import { User } from "firebase/auth";
 
@@ -124,6 +125,25 @@ export const signOutUser = async () => await signOut(auth);
 //////////////////////////////////////////////
 export const onAuthStateChangedListener = (callback: () => void) =>
   onAuthStateChanged(auth, callback);
+
+//writing customers onto Firebase
+export const addCollectionAndDocuments = async (
+  collectionKey, // this is the name of our collection: 'customers'
+  objectsToAdd // this is document that we add to collection
+) => {
+  //getting batch in order to write documents (objects = customers) in our collection
+  const batch = writeBatch(db);
+  //firebase makes for us collectionRef (we make collection)
+  const collectionRef = collection(db, collectionKey);
+
+  objectsToAdd.forEach((object) => {
+    const docRef = doc(collectionRef, object.id); //obj.id we need for key value (name of document)
+    batch.set(docRef, object);
+  });
+
+  await batch.commit();
+  // console.log("done");
+};
 
 ////////   reading customers   ////////////////
 export const getCustomersAndDocuments = async () => {
