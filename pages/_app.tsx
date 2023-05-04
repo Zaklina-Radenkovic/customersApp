@@ -24,6 +24,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   //   console.log("route change complete");
   //   setIsLoading(false);
   // });
+
+  // @ts-ignore
   const { user } = useCustomerContext();
   const { currentUser } = useUserContext();
   return (
