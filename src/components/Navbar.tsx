@@ -65,7 +65,7 @@ const AccountButton = () => {
           src={user?.photoURL || user?.avatar || ""}
         >
           {/* TODO: when user is sign out how to remove photo */}
-          {user === null ? (
+          {user === null || undefined ? (
             <UserCircleIcon fontSize="small" />
           ) : (
             getInitials(user?.name)

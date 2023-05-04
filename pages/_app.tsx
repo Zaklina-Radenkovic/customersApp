@@ -11,6 +11,8 @@ import type { AppProps } from "next/app";
 import Spinner from "../src/components/Spinner";
 import LinearDeterminate from "../src/components/LinearDeterminate";
 import Layout from "../src/components/Layout";
+import { useCustomerContext } from "../src/context/CustomerContext";
+// import { useUserContext } from "../src/context/UserContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   // const { isLoading, setIsLoading } = useUserContext();
@@ -22,7 +24,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   //   console.log("route change complete");
   //   setIsLoading(false);
   // });
-
+  const { user } = useCustomerContext();
+  const { currentUser } = useUserContext();
   return (
     <>
       <Head>
@@ -45,9 +48,13 @@ function MyApp({ Component, pageProps }: AppProps) {
           <CustomerProvider>
             <CssBaseline />
             <Toaster position="top-center" />
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            {user ? (
+              <Spinner />
+            ) : (
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            )}
           </CustomerProvider>
         </UserProvider>
       </ThemeProvider>
