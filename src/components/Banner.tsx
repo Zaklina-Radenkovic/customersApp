@@ -26,8 +26,8 @@ const Banner = ({ onDismiss, ...other }: OverviewBannerType) => {
       <div>
         <Typography color="inherit" sx={{ mt: 2 }} variant="h4">
           {user?.name
-            ? `Welcome to CustomList, ${user?.name}!`
-            : `Welcome to CustomList!`}
+            ? `Welcome to CustomersApp, ${user?.name}!`
+            : `Welcome to CustomersApp!`}
         </Typography>
 
         <Box sx={{ mt: 2 }}>
