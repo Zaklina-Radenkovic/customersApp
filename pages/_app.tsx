@@ -1,18 +1,14 @@
 import "../styles/globals.css";
 import Head from "next/head";
-import Router from "next/router";
 import { ThemeProvider } from "@mui/material/styles";
-import { UserProvider, useUserContext } from "../src/context/UserContext";
+import { UserProvider } from "../src/context/UserContext";
 import { CustomerProvider } from "../src/context/CustomerContext";
 import { createTheme } from "../src/theme";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Toaster } from "react-hot-toast";
 import type { AppProps } from "next/app";
 import Spinner from "../src/components/Spinner";
-import LinearDeterminate from "../src/components/LinearDeterminate";
 import Layout from "../src/components/Layout";
-import { useCustomerContext } from "../src/context/CustomerContext";
-// import { useUserContext } from "../src/context/UserContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   // const { isLoading, setIsLoading } = useUserContext();
@@ -25,15 +21,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   //   setIsLoading(false);
   // });
 
-  // @ts-ignore
-  const { user } = useCustomerContext();
-  const { currentUser } = useUserContext();
   return (
     <>
       <Head>
-        <title>CustomList</title>
+        <title>CustomersApp</title>
         <meta name="description" content="" />
-
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -50,13 +42,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           <CustomerProvider>
             <CssBaseline />
             <Toaster position="top-center" />
-            {user ? (
-              <Spinner />
-            ) : (
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            )}
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </CustomerProvider>
         </UserProvider>
       </ThemeProvider>

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import NextLink from "next/link";
+import { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
@@ -20,7 +20,6 @@ import { PencilAlt as PencilAltIcon } from "../../icons/pencil-alt";
 import { getInitials } from "../../utils/getInitials";
 import { Customer } from "../../../pages/customers";
 import { Scrollbar } from "../../scrollbar";
-// import { useTranslation } from "react-i18next";
 
 type CustomerListTableProps = {
   customers: Customer[];
@@ -44,7 +43,6 @@ export const ListTable = ({
   ...other
 }: CustomerListTableProps) => {
   const [selectedCustomers, setSelectedCustomers] = useState<any[]>(customers);
-  // const { t } = useTranslation();
 
   // Reset selected customers when customers change
   useEffect(
@@ -132,7 +130,6 @@ export const ListTable = ({
               const isCustomerSelected = selectedCustomers.includes(
                 customer?.id
               );
-
               return (
                 <TableRow
                   hover
@@ -166,14 +163,11 @@ export const ListTable = ({
                       </Avatar>
                       <Box sx={{ ml: 1 }}>
                         <NextLink
-                          href={`/customers/${customer.id}`}
+                          href={`/customers/${customer?.id}`}
                           passHref
                           color="inherit"
-                          // variant="subtitle2"
                         >
-                          {/* <Link color="inherit" variant="subtitle2"> */}
                           {customer.name}
-                          {/* </Link> */}
                         </NextLink>
                       </Box>
                     </Box>
@@ -195,12 +189,12 @@ export const ListTable = ({
                   </TableCell>
 
                   <TableCell align="right">
-                    <NextLink href={`/customers/${customer.id}/edit`} passHref>
+                    <NextLink href={`/customers/${customer?.id}/edit`} passHref>
                       <IconButton>
                         <PencilAltIcon fontSize="small" />
                       </IconButton>
                     </NextLink>
-                    <NextLink href={`/customers/${customer.id}`} passHref>
+                    <NextLink href={`/customers/${customer?.id}`} passHref>
                       <IconButton>
                         <ArrowRightIcon fontSize="small" />
                       </IconButton>

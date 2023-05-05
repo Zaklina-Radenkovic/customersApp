@@ -1,18 +1,12 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardHeader,
-  Divider,
-  useMediaQuery,
-} from "@mui/material";
+import { Card, CardHeader, Divider, useMediaQuery } from "@mui/material";
 import { PropertyList } from "../../PropertyList";
 import { PropertyListItem } from "../../PropertyListItem";
+import { Theme } from "@mui/material/styles";
 
 type CustomerBasicDetailsProps = {
-  address?: string;
-  email?: string;
-  phone?: string;
+  address?: string | undefined;
+  email?: string | undefined;
+  phone?: string | undefined;
 };
 
 export const BasicDetails = ({
@@ -21,11 +15,8 @@ export const BasicDetails = ({
   phone,
   ...other
 }: CustomerBasicDetailsProps) => {
-  const mdUp = useMediaQuery((theme) =>
-    // @ts-ignore
-    theme.breakpoints.up("md")
-  );
-
+  const mdUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("md"));
+  console.log(email);
   const align = mdUp ? "horizontal" : "vertical";
 
   return (
@@ -34,43 +25,27 @@ export const BasicDetails = ({
       <Divider />
       <PropertyList>
         <PropertyListItem
+          disableGutters
           align={align}
-          // @ts-ignore
           divider
           label="Email"
-          // @ts-ignore
           value={email}
         />
         <PropertyListItem
+          disableGutters
           align={align}
-          // @ts-ignore
           divider
           label="Phone"
-          // @ts-ignore
           value={phone}
         />
         <PropertyListItem
+          disableGutters
           align={align}
-          // @ts-ignore
           divider
           label="Address"
-          // @ts-ignore
           value={address}
         />
       </PropertyList>
-      {/* <CardActions
-        sx={{
-          flexWrap: "wrap",
-          px: 3,
-          py: 2,
-          m: -1,
-        }}
-      >
-        <Button sx={{ m: 1 }} variant="outlined">
-          Reset &amp; Send Password
-        </Button>
-        <Button sx={{ m: 1 }}>Login as Customer</Button>
-      </CardActions> */}
     </Card>
   );
 };

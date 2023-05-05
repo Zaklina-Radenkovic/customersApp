@@ -8,9 +8,9 @@ import {
   IconButton,
   Toolbar,
 } from "@mui/material";
-import { getInitials } from "../utils/getInitials";
 import { Menu as MenuIcon } from "../icons/menu";
 import { UserCircle as UserCircleIcon } from "../icons/user-circle";
+import { getInitials } from "../utils/getInitials";
 import { AccountPopover } from "./AccountPopover";
 import { useCustomerContext } from "../context/CustomerContext";
 
@@ -33,8 +33,8 @@ const NavbarRoot = styled(AppBar)(({ theme }) => ({
 const AccountButton = () => {
   const [openPopover, setOpenPopover] = useState(false);
   const anchorRef = useRef(null);
-  //@ts-ignore
-  const { user } = useCustomerContext();
+
+  const { user }: any = useCustomerContext();
   console.log(user);
 
   const handleOpenPopover = () => {
@@ -117,7 +117,6 @@ const Navbar = ({ onOpenSidebar, ...other }: Navbar) => {
             <MenuIcon fontSize="small" />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          {/* {/* <LanguageButton /> */}
           <AccountButton />
         </Toolbar>
       </NavbarRoot>

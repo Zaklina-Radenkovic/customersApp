@@ -1,5 +1,4 @@
 import { Box, Button, Card, Typography } from "@mui/material";
-
 import { useCustomerContext } from "../context/CustomerContext";
 
 type OverviewBannerType = {
@@ -7,8 +6,7 @@ type OverviewBannerType = {
 };
 
 const Banner = ({ onDismiss, ...other }: OverviewBannerType) => {
-  // @ts-ignore
-  const { user } = useCustomerContext();
+  const { user }: any = useCustomerContext();
 
   return (
     <Card

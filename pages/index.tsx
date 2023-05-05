@@ -2,19 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Container,
-  Divider,
-  Grid,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box } from "@mui/material";
 import Banner from "../src/components/Banner";
 
 const Home: NextPage = () => {
@@ -30,7 +18,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>CustomList </title>
+        <title>CustomersApp</title>
       </Head>
       <Box
         component="main"

@@ -123,13 +123,14 @@ export const signInAuthUserWithEmailAndPassword = async (
 export const signOutUser = async () => await signOut(auth);
 
 //////////////////////////////////////////////
-export const onAuthStateChangedListener = (callback: () => void) =>
-  onAuthStateChanged(auth, callback);
+export const onAuthStateChangedListener = (
+  callback: (arg: User | null) => null | undefined
+) => onAuthStateChanged(auth, callback);
 
 //writing customers onto Firebase
 export const addCollectionAndDocuments = async (
-  collectionKey, // this is the name of our collection: 'customers'
-  objectsToAdd // this is document that we add to collection
+  collectionKey: string, // this is the name of our collection: 'customers'
+  objectsToAdd: any[] // this is document that we add to collection
 ) => {
   //getting batch in order to write documents (objects = customers) in our collection
   const batch = writeBatch(db);
@@ -146,7 +147,7 @@ export const addCollectionAndDocuments = async (
 };
 
 ////////   reading customers   ////////////////
-export const getCustomersAndDocuments = async () => {
+export const getCustomersAndDocuments = async (arg: any) => {
   //we want collectionRef of 'categories'
   const collectionRef = collection(db, "customers");
   //we apply 'query' method on collectionRef which gives us object 'q'
@@ -159,9 +160,9 @@ export const getCustomersAndDocuments = async () => {
 
   // querySnapshot.docs.reduce(()=>{},{}) we need obj at the end
   const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
-    const data: DocumentData = docSnapshot.data();
+    const data = docSnapshot.data();
     if (data) {
-      // @ts-ignore
+      //@ts-ignore
       acc.push(data);
     }
     return acc;

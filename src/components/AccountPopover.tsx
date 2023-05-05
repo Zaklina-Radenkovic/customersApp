@@ -1,6 +1,5 @@
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { signOutUser } from "../lib/firebase";
 import toast from "react-hot-toast";
 import {
   Avatar,
@@ -15,6 +14,7 @@ import {
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Cog as CogIcon } from "../icons/cog";
 import { UserCircle as UserCircleIcon } from "../icons/user-circle";
+import { signOutUser } from "../lib/firebase";
 import { useCustomerContext } from "../context/CustomerContext";
 
 type AccountPopoverProp = {
@@ -30,12 +30,11 @@ export const AccountPopover = ({
   ...other
 }: AccountPopoverProp) => {
   const router = useRouter();
-  //@ts-ignore
-  const { user, setUser } = useCustomerContext();
+
+  const { user, setUser }: any = useCustomerContext();
   //console.log(user);
   const handleLogout = async () => {
     try {
-      //why here like this
       onClose?.();
       await signOutUser();
 
@@ -88,7 +87,7 @@ export const AccountPopover = ({
       </Box>
       <Divider />
       <Box sx={{ my: 1 }}>
-        <NextLink href="/account" passHref onClick={onClose}>
+        {/* <NextLink href="/account" passHref onClick={onClose}>
           <MenuItem>
             <ListItemIcon>
               <UserCircleIcon fontSize="small" />
@@ -97,8 +96,8 @@ export const AccountPopover = ({
               primary={<Typography variant="body1">Profile</Typography>}
             />
           </MenuItem>
-        </NextLink>
-        <NextLink href="/account" passHref>
+        </NextLink> */}
+        <NextLink href="/account" passHref onClick={onClose}>
           <MenuItem>
             <ListItemIcon>
               <CogIcon fontSize="small" />

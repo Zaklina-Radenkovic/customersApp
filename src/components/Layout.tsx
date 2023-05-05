@@ -4,7 +4,6 @@ import { Box } from "@mui/material";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
-// const theme = createTheme();
 const LayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
   flex: "1 1 auto",

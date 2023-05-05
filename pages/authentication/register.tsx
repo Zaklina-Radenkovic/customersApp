@@ -1,7 +1,8 @@
-import * as Yup from "yup";
-import toast from "react-hot-toast";
-import { useFormik } from "formik";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import toast from "react-hot-toast";
 import {
   Box,
   Button,
@@ -19,11 +20,7 @@ import {
   signInWithGooglePopup,
   createAuthUserWithEmailAndPassword,
 } from "../../src/lib/firebase";
-import { UserCredential } from "firebase/auth";
-import { User } from "firebase/auth";
 import { useMounted } from "../../src/hooks/use-mounted";
-import { useRouter } from "next/router";
-
 import { useUserContext } from "../../src/context/UserContext";
 import Spinner from "../../src/components/Spinner";
 
@@ -43,14 +40,11 @@ const Register = () => {
 
       await createUserDocumentFromAuth(user);
       // setIsLoading(true);
-
-      //zasto se stavlja ovde?
-      // before performing an action
       await wait(500);
       // setIsLoading(false);
+      // before performing an action
       if (isMounted()) {
-        const returnUrl = router.query.returnUrl || "/";
-        //@ts-ignore
+        const returnUrl: any = router.query.returnUrl || "/";
         router.push(returnUrl).catch(console.error);
         toast.success("You are registered!");
       }
@@ -81,17 +75,19 @@ const Register = () => {
       const name = values.displayName;
       try {
         // setIsLoading(true);
-        // @ts-ignore
-        const { user }: UserCredential | undefined =
-          await createAuthUserWithEmailAndPassword(email, password);
+
+        const { user }: any = await createAuthUserWithEmailAndPassword(
+          email,
+          password
+        );
 
         await createUserDocumentFromAuth(user, { name });
         // setUser(user);
         // console.log(user);
         await wait(500);
         if (isMounted()) {
-          const returnUrl = router.query.returnUrl || "/";
-          // @ts-ignore
+          const returnUrl: any = router.query.returnUrl || "/";
+
           router.push(returnUrl).catch(console.error);
         }
         // setIsLoading(false);
@@ -114,22 +110,17 @@ const Register = () => {
         }
         if (isMounted()) {
           helpers.setStatus({ success: false });
-          // @ts-ignore
-          helpers.setErrors({ submit: error.message });
+          // helpers.setErrors({ submit: error.message });
           helpers.setSubmitting(false);
         }
       }
     },
   });
 
-  // if (isLoading) {
-  //   return <Spinner />;
-  // }
-
   return (
     <>
       <Head>
-        <title>Register | Gym-tastic</title>
+        <title>CustomersApp | Register</title>
       </Head>
       <Box
         sx={{
@@ -240,16 +231,6 @@ const Register = () => {
                       fullWidth
                       variant="outlined"
                       onClick={handleGoogleClick}
-                      // sx={
-                      //   {
-                      //     backgroundColor: "common.white",
-                      //     color: "common.black",
-                      //     "&:hover": {
-                      //       backgroundColor: "primary.main",
-                      //       color: "common.white",
-                      //     },
-                      //   }
-                      // }
                     >
                       Sign in with{" "}
                       <Box

@@ -6,7 +6,7 @@ const Account = () => {
   return (
     <>
       <Head>
-        <title>CustomList | Account</title>
+        <title>CustomersApp | Account</title>
       </Head>
 
       <Box

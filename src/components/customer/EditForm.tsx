@@ -1,11 +1,9 @@
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import toast from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-// import LoadingButton from "@mui/lab/LoadingButton";
+import toast from "react-hot-toast";
 import {
-  Box,
   Button,
   Card,
   CardActions,
@@ -19,35 +17,25 @@ import { wait } from "../../utils/wait";
 import { updateCustomer, deleteCustomer } from "../../lib/firebase";
 
 type iCustomerEditFormProps = {
-  customer: object;
   address: string;
   email: string;
-  phone: string;
   name: string;
   id: string;
-  avatar: string | null;
-  photoURL: string | null;
 };
 
 export const EditForm = (
-  { customer }: iCustomerEditFormProps,
+  { address, email, name, id }: iCustomerEditFormProps,
   ...other: any
 ) => {
   const router = useRouter();
 
-  // console.log(customer.name);
+  // console.log(customer);
   const formik = useFormik({
     initialValues: {
-      // @ts-ignore
-      name: customer.name || "",
-      // @ts-ignore
-      email: customer.email || "",
-      // @ts-ignore
-      address: customer.address || "",
-      // @ts-ignore
-      phone: customer.phone || "",
-      // @ts-ignore
-      id: customer.id || "",
+      name: name || "",
+      email: email || "",
+      address: address || "",
+      phone: "",
       submit: null,
     },
     validationSchema: Yup.object({
@@ -63,17 +51,10 @@ export const EditForm = (
     onSubmit: async (values, helpers) => {
       const data = {
         email: values.email,
-        // id = customer.id;
         name: values.name,
         address: values.address,
         phone: values.phone,
       };
-      // const email = values.email;
-      // @ts-ignore
-      const id = customer.id;
-      // const name = values.name;
-      // const address = values.address;
-      // const phone = values.phone;
 
       try {
         await updateCustomer(id, data);
@@ -88,7 +69,6 @@ export const EditForm = (
             email: "",
             address: "",
             phone: "",
-            id: "",
             submit: null,
           },
         });
@@ -180,11 +160,7 @@ export const EditForm = (
             Update
           </Button>
 
-          <NextLink
-            // @ts-ignore
-            href={`/customers/${customer?.id}`}
-            passHref
-          >
+          <NextLink href={`/customers/${id}`} passHref>
             <Button
               variant="outlined"
               disabled={formik.isSubmitting}
@@ -200,10 +176,8 @@ export const EditForm = (
           <Button
             color="error"
             disabled={formik.isSubmitting}
-            //disabled={!dirty}
             onClick={() => {
-              // @ts-ignore
-              deleteCustomer(customer?.id);
+              deleteCustomer(id);
               toast.success("Customer successfully deleted");
               formik.resetForm({
                 values: {
@@ -211,7 +185,6 @@ export const EditForm = (
                   email: "",
                   address: "",
                   phone: "",
-                  id: "",
                   submit: null,
                 },
               });

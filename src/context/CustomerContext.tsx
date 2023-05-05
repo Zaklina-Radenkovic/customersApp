@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-
+import { User } from "firebase/auth";
 import { doc, getDoc, getFirestore, DocumentData } from "firebase/firestore";
 import { useUserContext } from "./UserContext";
 
@@ -24,11 +24,11 @@ export const CustomerProvider = ({
         console.log(userData);
         setUser(userData);
       }
+
       setIsLoading(false);
     };
     fetchUserInfo();
   }, [currentUser, setIsLoading]);
-
   return (
     <CustomerContext.Provider value={{ user, setUser, isLogin, setIsLogin }}>
       {children}

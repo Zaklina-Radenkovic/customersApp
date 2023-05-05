@@ -7,8 +7,9 @@ import { Users as UsersIcon } from "../icons/users";
 import { LockClosed as LockClosedIcon } from "../icons/lock-closed";
 import { Scrollbar } from "../scrollbar";
 import { SidebarItem } from "./SidebarItem";
+import { Theme } from "@mui/material/styles";
 
-type DashboardItem = {
+type SidebarSection = {
   title: string;
   path: string;
   query: string;
@@ -16,7 +17,7 @@ type DashboardItem = {
   subsections: [];
 };
 
-const getMenuItems = ({ isAdmin }: { isAdmin?: boolean }): DashboardItem[] =>
+const getMenuItems = ({ isAdmin }: { isAdmin?: boolean }): SidebarSection[] =>
   // @ts-ignore
   [
     {
@@ -36,7 +37,6 @@ const getMenuItems = ({ isAdmin }: { isAdmin?: boolean }): DashboardItem[] =>
         },
         {
           title: "Details",
-
           path: "/customers/[customerId]",
           query: { customerId: "customerId" },
         },
@@ -95,14 +95,9 @@ const Sidebar = ({ open, onClose }: Sidebar) => {
 
   //hook watching for matching lgUp screen
   //'true' = only client side rendering
-  const lgUp = useMediaQuery(
-    (theme) =>
-      // @ts-ignore
-      theme.breakpoints.up("lg"),
-    {
-      noSsr: true,
-    }
-  );
+  const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up("lg"), {
+    noSsr: true,
+  });
 
   const mobileProps = {
     variant: lgUp ? "permanent" : "temporary",
@@ -181,7 +176,7 @@ const Sidebar = ({ open, onClose }: Sidebar) => {
                     //   : false;
                     // const exactMatch =
                     //   menuItem.path.split("?")[0] === menuItem.path;
-                    // @ts-ignore
+
                     <SidebarItem
                       active={menuItem.path === router.pathname}
                       key={menuItem.title}

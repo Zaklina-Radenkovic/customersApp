@@ -2,20 +2,22 @@ import { Box, ListItem, ListItemText, Typography } from "@mui/material";
 
 type PropertyListItemProps = {
   align: string | string;
-  children: JSX.Element | JSX.Element[];
   disableGutters: boolean;
   label: string;
-  value: string;
+  value: string | undefined;
+  divider: boolean;
 };
 
-export const PropertyListItem = ({
-  align = "vertical",
-  children,
-  disableGutters,
-  value,
-  label,
-  ...other
-}: PropertyListItemProps) => {
+export const PropertyListItem = (
+  {
+    align = "vertical",
+    disableGutters,
+    value,
+    label,
+    ...other
+  }: PropertyListItemProps,
+  { children }: any
+) => {
   return (
     <ListItem
       sx={{

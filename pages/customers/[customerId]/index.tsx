@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
 import NextLink from "next/link";
 import Head from "next/head";
-// import { db } from "../../src/lib/firebase";
-import { collection, doc, getDocs, getDoc } from "firebase/firestore";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
@@ -10,22 +9,17 @@ import {
   Chip,
   Container,
   Grid,
-  Link,
   Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { PencilAlt as PencilAltIcon } from "../../../src/icons/pencil-alt";
-
+import { useMounted } from "../../../src/hooks/use-mounted";
+import { collection, doc, getDocs, getDoc } from "firebase/firestore";
+import { db } from "../../../src/lib/firebase";
 import { getInitials } from "../../../src/utils/getInitials";
 import { BasicDetails } from "../../../src/components/customer/BasicDetails";
-import { Customer } from "../../customers";
-import { db } from "../../../src/lib/firebase";
-import { useMounted } from "../../../src/hooks/use-mounted";
-import { useRouter } from "next/router";
 
-// import { AuthGuard } from '../../../../components/authentication/auth-guard';
-
-export interface iCustomerDetails extends Customer {
+export interface iCustomerDetails {
   address: string;
   email: string;
   phone: string;
@@ -34,18 +28,14 @@ export interface iCustomerDetails extends Customer {
   avatar: string;
 }
 
-const CustomerDetails = ({ customerDetail, id }: any) => {
-  // console.log(id);
+const CustomerDetails = ({ customerDetail }: any) => {
+  console.log(customerDetail);
   const isMounted = useMounted();
   const [customer, setCustomer] = useState<null | iCustomerDetails>(
     customerDetail
   );
-
   const router = useRouter();
   const customerId = router.query.customerId;
-  // useEffect(() => {
-  //   gtm.push({ event: "page_view" });
-  // }, []);
 
   useEffect(
     () => {
@@ -62,9 +52,8 @@ const CustomerDetails = ({ customerDetail, id }: any) => {
   return (
     <>
       <Head>
-        <title>Customer Details | CustomList</title>
+        <title>CustomersApp | Customer Details</title>
       </Head>
-
       <Box
         component="main"
         sx={{
@@ -108,7 +97,6 @@ const CustomerDetails = ({ customerDetail, id }: any) => {
                 </Avatar>
                 <div>
                   <Typography variant="h4">{customer?.email}</Typography>
-
                   <Box
                     sx={{
                       display: "flex",
@@ -154,7 +142,6 @@ export default CustomerDetails;
 
 export const getStaticPaths = async () => {
   const userData = await getDocs(collection(db, "customers"));
-  // @ts-ignore
   const paths = userData.docs.map((customer) => ({
     params: { customerId: customer.id.toString() },
   }));
@@ -170,7 +157,6 @@ export const getStaticProps = async (context: any) => {
   let id = context?.params.customerId;
   const customerRef = doc(db, "customers", id);
   const customerSnap = await getDoc(customerRef);
-  // const customerDetail = customerSnap.data();
 
   const customerData = customerSnap.data();
   const customerDetail = {
@@ -182,7 +168,6 @@ export const getStaticProps = async (context: any) => {
   if (!customerDetail) return { notFound: true };
 
   return {
-    // props: { customerDetail: [JSON.parse(JSON.stringify(customerDetail))] },
     props: { customerDetail, id },
   };
 };

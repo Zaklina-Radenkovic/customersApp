@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import Head from "next/head";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
-  Button,
   Card,
   Container,
   Grid,
@@ -10,17 +9,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
-import { ListTable } from "../../src/components/customer/ListTable";
-// import { useMounted } from "../../src/components/hooks/use-mounted";
 import { Plus as PlusIcon } from "../../src/icons/plus";
 import { Search as SearchIcon } from "../../src/icons/search";
+import { ListTable } from "../../src/components/customer/ListTable";
 import { DocumentData } from "firebase/firestore";
 import { getCustomersAndDocuments } from "../../src/lib/firebase";
-// import { AuthGuard } from "../../../components/authentication/auth-guard";
 
 export type Customer = {
-  customer: object;
   address: string;
   email: string;
   phone: string;
@@ -50,8 +45,9 @@ const applyFilters = (customers: Customer[], query: string) =>
 
       properties.forEach((property) => {
         if (
-          // @ts-ignore
-          customer[property].toLowerCase().includes(query.toLowerCase())
+          customer[property as keyof Customer]
+            .toLowerCase()
+            .includes(query.toLowerCase())
         ) {
           queryMatched = true;
         }
@@ -110,7 +106,6 @@ const applyPagination = (
 ) => customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 const CustomerList = () => {
-  // const isMounted = useMounted();
   const queryRef = useRef<any | null>(null);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [sort, setSort] = useState(sortOptions[0].value);
@@ -121,10 +116,10 @@ const CustomerList = () => {
   useEffect(() => {
     // calling 'async' fnc inside of useeffect
     const getCustomersMap = async () => {
-      // @ts-ignore
       const data: DocumentData = await getCustomersAndDocuments("customers");
-      // @ts-ignore
-      const customersArr = data.reduce((acc, user) => {
+      //@ts-ignore
+      const customersArr = data.reduce((acc, user: any) => {
+        //{}[]
         const customer = {
           ...user,
           name: user.displayName || user.name,
@@ -136,9 +131,7 @@ const CustomerList = () => {
         acc.push(customer);
         return acc;
       }, []);
-
       // console.log(customersArr);
-
       setCustomers(customersArr);
     };
     getCustomersMap();
@@ -164,7 +157,6 @@ const CustomerList = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  // Usually query is done on backend with indexing solutions
   const filteredCustomers = applyFilters(customers, query);
   const sortedCustomers = applySort(filteredCustomers, sort);
   const paginatedCustomers = applyPagination(
@@ -176,9 +168,8 @@ const CustomerList = () => {
   return (
     <>
       <Head>
-        <title>CustomList | Customer List</title>
+        <title>CustomersApp | Customers List</title>
       </Head>
-
       <Box
         component="main"
         sx={{

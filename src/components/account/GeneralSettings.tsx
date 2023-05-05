@@ -1,8 +1,10 @@
 import { useState, useCallback } from "react";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import toast from "react-hot-toast";
 import {
   Avatar,
   Box,
-  Link,
   Button,
   Card,
   CardContent,
@@ -11,22 +13,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import toast from "react-hot-toast";
-import { wait } from "../../utils/wait";
 import { UserCircle as UserCircleIcon } from "../../icons/user-circle";
-import * as Yup from "yup";
-import { useFormik } from "formik";
-
+import { wait } from "../../utils/wait";
 import { updateCustomer } from "../../lib/firebase";
 import { useCustomerContext } from "../../context/CustomerContext";
 import { DeleteModal } from "../DeleteModal";
-import { User } from "firebase/auth";
-import { Customer } from "../../../pages/customers";
 
 export const GeneralSettings = (props: any) => {
-  // @ts-ignore
-  const { user } = useCustomerContext();
-  console.log(user);
+  const { user }: any = useCustomerContext();
+  // console.log(user);
   const [isEditing, setIsEditing] = useState(false);
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const [name, setName] = useState(user?.name || "");
@@ -92,9 +87,7 @@ export const GeneralSettings = (props: any) => {
         email: values.email,
         name: values.name,
       };
-
       const id = user.id;
-
       try {
         await updateCustomer(id, data);
         await wait(500);
@@ -104,7 +97,7 @@ export const GeneralSettings = (props: any) => {
         toast.success("Customer updated!");
       } catch (err) {
         console.error(err);
-        // toast.error("Something went wrong!");
+        toast.error("Something went wrong!");
         helpers.setStatus({ success: false });
         // helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
@@ -112,40 +105,41 @@ export const GeneralSettings = (props: any) => {
     },
   });
 
-  const formik2 = useFormik({
-    initialValues: {
-      oldPassword: "",
-      password: "",
-      confirmPassword: "",
-    },
-    validationSchema: Yup.object({
-      password: Yup.string()
-        .required("No password provided.")
-        .min(8, "Password is too short - should be 8 chars minimum.")
-        .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
-      confirmPassword: Yup.string().oneOf(
-        // @ts-ignore
-        [Yup.ref("password"), null],
-        "Passwords must match"
-      ),
-    }),
-    onSubmit: async (values, helpers) => {
-      //   const data = {
-      //     image: values.image,
-      //     name: values.name,
-      //     email: values.email,
-      //   };
-      //   // toast.success('Account updated')
-      //   // router.push('').catch(console.error);
-      //   console.error(err);
-      //   // toast.error("Something went wrong!");
-      //   helpers.setStatus({ success: false });
-      //   helpers.setErrors({ submit: err.message });
-      //   helpers.setSubmitting(false);
-      // },
-      console.log(values);
-    },
-  });
+  // const formik2 = useFormik({
+  //   initialValues: {
+  //     oldPassword: "",
+  //     password: "",
+  //     confirmPassword: "",
+  //   },
+  //   validationSchema: Yup.object({
+  //     password: Yup.string()
+  //       .required("No password provided.")
+  //       .min(8, "Password is too short - should be 8 chars minimum.")
+  //       .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
+  //     confirmPassword: Yup.string().oneOf(
+  //       //@ts-ignore
+  //       [Yup.ref("password"), null],
+  //       "Passwords must match"
+  //     ),
+  //   }).required(),
+
+  //   onSubmit: async (values, helpers) => {
+  //     //   const data = {
+  //     //     image: values.image,
+  //     //     name: values.name,
+  //     //     email: values.email,
+  //     //   };
+  //     //   // toast.success('Account updated')
+  //     //   // router.push('').catch(console.error);
+  //     //   console.error(err);
+  //     //   // toast.error("Something went wrong!");
+  //     //   helpers.setStatus({ success: false });
+  //     //   helpers.setErrors({ submit: err.message });
+  //     //   helpers.setSubmitting(false);
+  //     // },
+  //     console.log(values);
+  //   },
+  // });
 
   return (
     <Box sx={{ mt: 4 }} {...props}>
@@ -181,8 +175,12 @@ export const GeneralSettings = (props: any) => {
                       multiple
                       type="file"
                       onChange={(event) =>
-                        // @ts-ignore
-                        formik1.setFieldValue("image", event.target!.files[0])
+                        event.target.files
+                          ? formik1.setFieldValue(
+                              "image",
+                              event.target.files[0]
+                            )
+                          : null
                       }
                     />
                     Change
@@ -257,7 +255,6 @@ export const GeneralSettings = (props: any) => {
                 <Button
                   sx={{ mt: 4 }}
                   variant="contained"
-                  // onClick={handleEdit}
                   disabled={formik1.isSubmitting}
                   type="submit"
                 >

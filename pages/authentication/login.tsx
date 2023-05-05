@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
-import * as Yup from "yup";
-import toast from "react-hot-toast";
-import { useFormik } from "formik";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import toast from "react-hot-toast";
 import {
   Box,
   Button,
@@ -14,17 +14,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Spinner from "../../src/components/Spinner";
 import { wait } from "../../src/utils/wait";
-import { useRouter } from "next/router";
 import {
   signInWithGooglePopup,
   signInAuthUserWithEmailAndPassword,
   auth,
 } from "../../src/lib/firebase";
-
 import { useMounted } from "../../src/hooks/use-mounted";
 import { useUserContext } from "../../src/context/UserContext";
+import Spinner from "../../src/components/Spinner";
 
 const Login = () => {
   const { isLoading, setIsLoading } = useUserContext();
@@ -40,8 +38,7 @@ const Login = () => {
       // if (auth.currentUser !== user) {
       await wait(500);
       if (isMounted()) {
-        const returnUrl = router.query.returnUrl || "/";
-        //@ts-ignore
+        const returnUrl: any = router.query.returnUrl || "/";
         router.push(returnUrl).catch(console.error);
         toast.success("You are logged in!");
       }
@@ -73,8 +70,7 @@ const Login = () => {
       const email = values.email;
       const password = values.password;
       try {
-        //@ts-ignore
-        const { user } = await signInAuthUserWithEmailAndPassword(
+        const { user }: any = await signInAuthUserWithEmailAndPassword(
           email,
           password
         );
@@ -95,8 +91,7 @@ const Login = () => {
         toast.success(`You are logged in as ${user?.email}!`);
         // setIsLoading(false);
         if (isMounted()) {
-          const returnUrl = router.query.returnUrl || "/";
-          //@ts-ignore
+          const returnUrl: any = router.query.returnUrl || "/";
           router.push(returnUrl).catch(console.error);
         }
         // }
@@ -117,22 +112,17 @@ const Login = () => {
         toast.error("Something went wrong!");
         if (isMounted()) {
           helpers.setStatus({ success: false });
-          // @ts-ignore
-          helpers.setErrors({ submit: err.message });
+          // helpers.setErrors({ submit: err.message });
           helpers.setSubmitting(false);
         }
       }
     },
   });
 
-  // if (isLoading) {
-  //   return <Spinner />;
-  // }
-
   return (
     <>
       <Head>
-        <title>Login | Gym-tastic</title>
+        <title>CustomersApp | Login</title>
       </Head>
       <Box
         sx={{

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-
 import { Box, Button, Collapse, ListItem, List } from "@mui/material";
 import { ChevronDown as ChevronDownIcon } from "../icons/chevron-down";
 import { ChevronRight as ChevronRightIcon } from "../icons/chevron-right";
@@ -12,10 +11,7 @@ type SidebarItemProp = {
   open?: boolean;
   path: string;
   title: string;
-  // router: any;
-  menuItem: any;
   subsections: [];
-  query: string;
 };
 
 export const SidebarItem = ({
@@ -24,9 +20,6 @@ export const SidebarItem = ({
   open: openProp,
   path,
   title,
-  // router,
-  menuItem,
-  query,
   subsections,
   ...other
 }: SidebarItemProp) => {

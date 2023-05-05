@@ -48,8 +48,7 @@ export const UserProvider = ({
   };
 
   useEffect(() => {
-    // @ts-ignore
-    const unsubscribe = onAuthStateChangedListener((user: User) => {
+    const unsubscribe = onAuthStateChangedListener((user: User | null) => {
       if (!user) return null;
       if (user) {
         // setIsLoading(true);

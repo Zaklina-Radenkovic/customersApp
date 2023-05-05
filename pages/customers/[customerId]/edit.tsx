@@ -1,35 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import NextLink from "next/link";
 import Head from "next/head";
+import { GetStaticPaths } from "next";
+import { useEffect, useState } from "react";
 import { Avatar, Box, Chip, Container, Link, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
-// import { AuthGuard } from '../../../../components/authentication/auth-guard';
-
-import { EditForm } from "../../../src/components/customer/EditForm";
 import { useMounted } from "../../../src/hooks/use-mounted";
-import {
-  collection,
-  doc,
-  getDocs,
-  getDoc,
-  DocumentData,
-} from "firebase/firestore";
-import { getInitials } from "../../../src/utils/getInitials";
-import { Customer } from "../../customers";
 import { db } from "../../../src/lib/firebase";
-
-// interface iCustomerDetail {
-//   customerData: DocumentData | undefined;
-//   name: string;
-//   avatar: string;
-// }
+import { collection, doc, getDocs, getDoc } from "firebase/firestore";
+import { getInitials } from "../../../src/utils/getInitials";
+import { EditForm } from "../../../src/components/customer/EditForm";
+import { iCustomerDetails } from "./index";
 
 const CustomerEdit = ({ customerDetail }: any) => {
   const isMounted = useMounted();
-  const [customer, setCustomer] = useState<null | Customer>(customerDetail);
-  // const customerId = router.query.customerId;
+  const [customer, setCustomer] = useState<null | iCustomerDetails>(
+    customerDetail
+  );
+  // console.log(customerDetail);
 
   useEffect(
     () => {
@@ -46,7 +33,7 @@ const CustomerEdit = ({ customerDetail }: any) => {
   return (
     <>
       <Head>
-        <title>Customer Edit | CustomList</title>
+        <title>CustomersApp | Customer Edit</title>
       </Head>
 
       <Box
@@ -108,14 +95,10 @@ const CustomerEdit = ({ customerDetail }: any) => {
           </Box>
           <Box mt={3}>
             <EditForm
-              customer={customer}
-              address={""}
-              email={""}
-              phone={""}
-              name={""}
-              id={""}
-              avatar={null}
-              photoURL={null}
+              address={customer?.address}
+              name={customer?.name}
+              email={customer?.email}
+              id={customer?.id}
             />
           </Box>
         </Container>
@@ -128,23 +111,19 @@ export default CustomerEdit;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const userData = await getDocs(collection(db, "customers"));
-  // @ts-ignore
   const paths = userData.docs.map((customer) => ({
     params: { customerId: customer.id.toString() },
   }));
-
   return {
     paths,
     fallback: false,
   };
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  let id = context.params!.customerId;
-  // @ts-ignore
+export const getStaticProps = async (context: any) => {
+  let id = context?.params!.customerId;
   const customerRef = doc(db, "customers", id);
   const customerSnap = await getDoc(customerRef);
-  // const customerDetail = customerSnap.data();
 
   const customerData = customerSnap.data();
   const customerDetail = {
@@ -156,7 +135,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!customerDetail) return { notFound: true };
 
   return {
-    // props: { customerDetail: [JSON.parse(JSON.stringify(customerDetail))] },
     props: { customerDetail },
   };
 };
