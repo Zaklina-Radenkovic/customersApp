@@ -21,7 +21,7 @@ import { DeleteModal } from "../DeleteModal";
 
 export const GeneralSettings = (props: any) => {
   const { user }: any = useCustomerContext();
-  // console.log(user);
+  console.log(user);
   const [isEditing, setIsEditing] = useState(false);
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const [name, setName] = useState(user?.name || "");
@@ -90,8 +90,8 @@ export const GeneralSettings = (props: any) => {
       const id = user.id;
       try {
         await updateCustomer(id, data);
-        await wait(500);
-        console.log(values);
+        // await wait(500);
+        // console.log(values);
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
         toast.success("Customer updated!");
@@ -247,7 +247,7 @@ export const GeneralSettings = (props: any) => {
                   />
 
                   <Button
-                    onClick={!user?.email ? handleEmailChange : handleEdit}
+                    onClick={user?.email ? handleEmailChange : handleEdit}
                   >
                     {isEditing ? "Save" : "Edit"}
                   </Button>
