@@ -97,7 +97,7 @@ export const AccountPopover = ({
             />
           </MenuItem>
         </NextLink> */}
-        <NextLink href="/account" passHref onClick={onClose}>
+        <NextLink href="/account" passHref>
           <MenuItem>
             <ListItemIcon>
               <CogIcon fontSize="small" />

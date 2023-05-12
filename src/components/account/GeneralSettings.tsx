@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
@@ -18,23 +18,17 @@ import { wait } from "../../utils/wait";
 import { updateCustomer } from "../../lib/firebase";
 import { useCustomerContext } from "../../context/CustomerContext";
 import { DeleteModal } from "../DeleteModal";
+import { useMounted } from "../../hooks/use-mounted";
 
 export const GeneralSettings = (props: any) => {
-  const { user }: any = useCustomerContext();
+  const isMounted = useMounted();
+  const { user, setUser }: any = useCustomerContext();
   console.log(user);
   const [isEditing, setIsEditing] = useState(false);
   const [modalIsVisible, setModalIsVisible] = useState(false);
-  const [name, setName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email);
+  // const [name, setName] = useState(user?.name || "");
+  // const [email, setEmail] = useState(user?.email);
   // const [image, setImage] = useState(user?.photoURL);
-
-  const handleNameChange = () => {
-    setName(formik1.values.name);
-  };
-
-  const handleEmailChange = () => {
-    setEmail(formik1.values.email);
-  };
 
   const handleEdit = () => {
     setIsEditing(!isEditing);
@@ -55,12 +49,14 @@ export const GeneralSettings = (props: any) => {
   ];
   const formik1 = useFormik({
     initialValues: {
+      user: user,
       image: user?.photoURL || "",
-      name: name,
-      email: email,
+      name: user?.name || "",
+      email: user?.email || "",
       id: user?.id || "",
       submit: null,
     },
+    enableReinitialize: true,
     validationSchema: Yup.object({
       image: Yup.mixed().nullable(),
       // .test(
@@ -90,10 +86,15 @@ export const GeneralSettings = (props: any) => {
       const id = user.id;
       try {
         await updateCustomer(id, data);
-        // await wait(500);
-        // console.log(values);
+
+        await wait(500);
+        // if (isMounted()) {
+        setUser(data);
+        // }
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
+
+        // console.log(user);
         toast.success("Customer updated!");
       } catch (err) {
         console.error(err);
@@ -104,42 +105,12 @@ export const GeneralSettings = (props: any) => {
       }
     },
   });
-
-  // const formik2 = useFormik({
-  //   initialValues: {
-  //     oldPassword: "",
-  //     password: "",
-  //     confirmPassword: "",
-  //   },
-  //   validationSchema: Yup.object({
-  //     password: Yup.string()
-  //       .required("No password provided.")
-  //       .min(8, "Password is too short - should be 8 chars minimum.")
-  //       .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
-  //     confirmPassword: Yup.string().oneOf(
-  //       //@ts-ignore
-  //       [Yup.ref("password"), null],
-  //       "Passwords must match"
-  //     ),
-  //   }).required(),
-
-  //   onSubmit: async (values, helpers) => {
-  //     //   const data = {
-  //     //     image: values.image,
-  //     //     name: values.name,
-  //     //     email: values.email,
-  //     //   };
-  //     //   // toast.success('Account updated')
-  //     //   // router.push('').catch(console.error);
-  //     //   console.error(err);
-  //     //   // toast.error("Something went wrong!");
-  //     //   helpers.setStatus({ success: false });
-  //     //   helpers.setErrors({ submit: err.message });
-  //     //   helpers.setSubmitting(false);
-  //     // },
-  //     console.log(values);
-  //   },
-  // });
+  const handleNameChange = useCallback(() => {
+    formik1.setFieldValue("name", formik1.values.name);
+  }, [formik1]);
+  const handleEmailChange = useCallback(() => {
+    formik1.setFieldValue("email", formik1.values.email);
+  }, [formik1]);
 
   return (
     <Box sx={{ mt: 4 }} {...props}>
@@ -247,7 +218,7 @@ export const GeneralSettings = (props: any) => {
                   />
 
                   <Button
-                    onClick={user?.email ? handleEmailChange : handleEdit}
+                    onClick={user?.email ? handleEdit : handleEmailChange}
                   >
                     {isEditing ? "Save" : "Edit"}
                   </Button>
@@ -265,138 +236,6 @@ export const GeneralSettings = (props: any) => {
           </Grid>
         </CardContent>
       </Card>
-
-      {/* <Card sx={{ mt: 4 }}>
-        <CardContent>
-          <Grid container spacing={3}>
-            <Grid item md={4} xs={12}>
-              <Typography variant="h6">Change password</Typography>
-            </Grid>
-            <Grid item md={8} sm={12} xs={12}>
-              <Typography variant="subtitle2">Old password</Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  mt: 1,
-                }}
-              >
-                <OutlinedInput
-                  onChange={formik2.handleChange}
-                  label="Password"
-                  type="password"
-                  size="small"
-                  sx={{
-                    flexGrow: 1,
-                    mr: 3,
-                    ...(!isEditing && {
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderStyle: "dotted",
-                      },
-                    }),
-                  }}
-                  value={formik2.values.oldPassword}
-                  error={Boolean(
-                    formik2.touched.oldPassword && formik2.errors.oldPassword
-                  )}
-                  // helperText={
-                  //   formik2.touched.oldPassword && formik2.errors.oldPassword
-                  // }
-                />
-              </Box>
-              <Typography variant="subtitle2" sx={{ mt: 3 }}>
-                New password
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  mt: 1,
-                }}
-              >
-                <OutlinedInput
-                  onChange={formik2.handleChange}
-                  label="Password"
-                  type="password"
-                  size="small"
-                  sx={{
-                    flexGrow: 1,
-                    mr: 3,
-                    // ...(!isEditing && {
-                    //   "& .MuiOutlinedInput-notchedOutline": {
-                    //     borderStyle: "dotted",
-                    //   },
-                    // }),
-                  }}
-                  value={formik2.values.password}
-                  error={Boolean(
-                    formik2.touched.password && formik2.errors.password
-                  )}
-                />
-              </Box>
-              <Typography variant="subtitle2" sx={{ mt: 3 }}>
-                Confirm new password
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  mt: 1,
-                }}
-              >
-                <OutlinedInput
-                  onChange={formik2.handleChange}
-                  label="Password"
-                  type="password"
-                  size="small"
-                  sx={{
-                    flexGrow: 1,
-                    mr: 3,
-                    // ...(!isEditing && {
-                    //   "& .MuiOutlinedInput-notchedOutline": {
-                    //     borderStyle: "dotted",
-                    //   },
-                    // }),
-                  }}
-                  value={formik2.values.confirmPassword}
-                  error={Boolean(
-                    formik2.touched.confirmPassword &&
-                      formik2.errors.confirmPassword
-                  )}
-                />
-              </Box>
-              <div>
-                <Typography
-                  color="textSecondary"
-                  variant="body2"
-                  sx={{ mt: 3 }}
-                >
-                  Make sure it&#39;s at least 15 characters OR at least 8
-                  characters including a number and a lowercase letter.
-                </Typography>
-              </div>
-              <Button
-                variant="contained"
-                // onClick={handleEdit}
-                disabled={formik2.isSubmitting}
-              >
-                Update password
-              </Button>
-              <Link
-                href="#"
-                underline="hover"
-                sx={{ pl: 2 }}
-                color="primary"
-                onClick={(event: React.SyntheticEvent) =>
-                  event.preventDefault()
-                }
-              >
-                I forgot my password
-              </Link>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card> */}
 
       <Card sx={{ mt: 4 }}>
         <CardContent>

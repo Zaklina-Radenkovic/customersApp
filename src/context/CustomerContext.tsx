@@ -17,18 +17,18 @@ export const CustomerProvider = ({
   useEffect(() => {
     const fetchUserInfo = async () => {
       if (currentUser) {
-        setIsLoading(true);
+        // setIsLoading(true);
         const userRef = doc(getFirestore(), "customers", currentUser?.uid);
         const data = await getDoc(userRef);
         const userData = data.data();
         console.log(userData);
         setUser(userData);
       }
-
-      setIsLoading(false);
+      console.log(user);
+      // setIsLoading(false);
     };
     fetchUserInfo();
-  }, [currentUser, setIsLoading]);
+  }, [currentUser]);
   return (
     <CustomerContext.Provider value={{ user, setUser, isLogin, setIsLogin }}>
       {children}
