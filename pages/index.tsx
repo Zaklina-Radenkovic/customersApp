@@ -8,6 +8,7 @@ import Banner from "../src/components/Banner";
 const Home: NextPage = () => {
   const [displayBanner, setDisplayBanner] = useState(true);
   const router = useRouter();
+
   const handleDismissBanner = () => {
     // Update the persistent state
     globalThis.sessionStorage.setItem("dismiss-banner", "true");

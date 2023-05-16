@@ -7,20 +7,10 @@ import { createTheme } from "../src/theme";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Toaster } from "react-hot-toast";
 import type { AppProps } from "next/app";
-import Spinner from "../src/components/Spinner";
 import Layout from "../src/components/Layout";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // const { isLoading, setIsLoading } = useUserContext();
-  // Router.events.on("routeChangeStart", (url) => {
-  //   console.log("route change");
-  //   setIsLoading(true);
-  // });
-  // Router.events.on("routeChangeComplete", (url) => {
-  //   console.log("route change complete");
-  //   setIsLoading(false);
-  // });
-
+  
   return (
     <>
       <Head>

@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { PencilAlt as PencilAltIcon } from "../../../src/icons/pencil-alt";
-import { useMounted } from "../../../src/hooks/use-mounted";
 import { collection, doc, getDocs, getDoc } from "firebase/firestore";
 import { db } from "../../../src/lib/firebase";
 import { getInitials } from "../../../src/utils/getInitials";
@@ -29,8 +28,6 @@ export interface iCustomerDetails {
 }
 
 const CustomerDetails = ({ customerDetail }: any) => {
-  console.log(customerDetail);
-  const isMounted = useMounted();
   const [customer, setCustomer] = useState<null | iCustomerDetails>(
     customerDetail
   );

@@ -33,9 +33,7 @@ const NavbarRoot = styled(AppBar)(({ theme }) => ({
 const AccountButton = () => {
   const [openPopover, setOpenPopover] = useState(false);
   const anchorRef = useRef(null);
-
   const { user }: any = useCustomerContext();
-  // console.log(user);
 
   const handleOpenPopover = () => {
     setOpenPopover(true);
@@ -65,11 +63,14 @@ const AccountButton = () => {
           src={user?.photoURL || user?.avatar || ""}
         >
           {/* TODO: when user is sign out how to remove photo */}
-          {user === null || undefined ? (
+          {/* {user === null || undefined ? (
             <UserCircleIcon fontSize="small" />
           ) : (
             getInitials(user?.name)
-          )}
+          )} */}
+
+          {!user && <UserCircleIcon fontSize="small" />}
+          {user && getInitials(user?.name)}
         </Avatar>
       </Box>
       <AccountPopover

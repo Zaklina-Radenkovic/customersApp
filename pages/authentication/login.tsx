@@ -14,19 +14,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { wait } from "../../src/utils/wait";
 import {
   signInWithGooglePopup,
   signInAuthUserWithEmailAndPassword,
-  auth,
 } from "../../src/lib/firebase";
 import { useMounted } from "../../src/hooks/use-mounted";
-import { useUserContext } from "../../src/context/UserContext";
-import Spinner from "../../src/components/Spinner";
 
 const Login = () => {
-  const { isLoading, setIsLoading } = useUserContext();
-
   const isMounted = useMounted();
   const router = useRouter();
 
@@ -34,16 +28,10 @@ const Login = () => {
     try {
       const { user } = await signInWithGooglePopup();
 
-      // setIsLoading(true);
-      // if (auth.currentUser !== user) {
-      await wait(500);
       if (isMounted()) {
-        const returnUrl: any = router.query.returnUrl || "/";
-        router.push(returnUrl).catch(console.error);
+        router.push("/");
         toast.success("You are logged in!");
       }
-      // setIsLoading(false);
-      // }
       // if (auth.currentUser === user) {
       //   toast.error("You are already logged in! Continue browsing the App :)");
       // }
@@ -74,10 +62,7 @@ const Login = () => {
           email,
           password
         );
-        // setIsLoading(true);
 
-        // if (auth.currentUser !== user) {
-        await wait(500);
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
         helpers.resetForm({
@@ -86,15 +71,10 @@ const Login = () => {
             password: "",
           },
         });
-        // setUser(user);
-        // console.log(user);
-        toast.success(`You are logged in as ${user?.email}!`);
-        // setIsLoading(false);
         if (isMounted()) {
-          const returnUrl: any = router.query.returnUrl || "/";
-          router.push(returnUrl).catch(console.error);
+          router.push("/");
+          toast.success(`You are logged in as ${user?.email}!`);
         }
-        // }
         // if (auth.currentUser === user) {
         //   toast.error(
         //     "You are already logged in! Continue browsing the App :)"

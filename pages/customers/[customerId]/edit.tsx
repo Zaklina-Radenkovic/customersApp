@@ -4,7 +4,6 @@ import { GetStaticPaths } from "next";
 import { useEffect, useState } from "react";
 import { Avatar, Box, Chip, Container, Link, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useMounted } from "../../../src/hooks/use-mounted";
 import { db } from "../../../src/lib/firebase";
 import { collection, doc, getDocs, getDoc } from "firebase/firestore";
 import { getInitials } from "../../../src/utils/getInitials";
@@ -12,11 +11,9 @@ import { EditForm } from "../../../src/components/customer/EditForm";
 import { iCustomerDetails } from "./index";
 
 const CustomerEdit = ({ customerDetail }: any) => {
-  const isMounted = useMounted();
   const [customer, setCustomer] = useState<null | iCustomerDetails>(
     customerDetail
   );
-  // console.log(customerDetail);
 
   useEffect(
     () => {

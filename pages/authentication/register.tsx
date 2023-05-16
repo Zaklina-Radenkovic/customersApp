@@ -14,18 +14,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { wait } from "../../src/utils/wait";
 import {
   createUserDocumentFromAuth,
   signInWithGooglePopup,
   createAuthUserWithEmailAndPassword,
 } from "../../src/lib/firebase";
 import { useMounted } from "../../src/hooks/use-mounted";
-import { useUserContext } from "../../src/context/UserContext";
-import Spinner from "../../src/components/Spinner";
 
 const Register = () => {
-  const { isLoading, setIsLoading } = useUserContext();
   //isMounted returns fnc, isMounted() returns true/false
   const isMounted = useMounted();
   const router = useRouter();
@@ -37,15 +33,11 @@ const Register = () => {
       // console.log(response);
       //   we can destructure user from response
       const { user } = await signInWithGooglePopup();
-
       await createUserDocumentFromAuth(user);
-      // setIsLoading(true);
-      await wait(500);
-      // setIsLoading(false);
+
       // before performing an action
       if (isMounted()) {
-        const returnUrl: any = router.query.returnUrl || "/";
-        router.push(returnUrl).catch(console.error);
+        router.push("/");
         toast.success("You are registered!");
       }
     } catch (err) {
@@ -74,26 +66,14 @@ const Register = () => {
       const password = values.password;
       const name = values.displayName;
       try {
-        // setIsLoading(true);
-
         const { user }: any = await createAuthUserWithEmailAndPassword(
           email,
           password
         );
-
         await createUserDocumentFromAuth(user, { name });
-        // setUser(user);
-        // console.log(user);
-        await wait(500);
-        if (isMounted()) {
-          const returnUrl: any = router.query.returnUrl || "/";
 
-          router.push(returnUrl).catch(console.error);
-        }
-        // setIsLoading(false);
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
-        toast.success("You are registered!");
         helpers.resetForm({
           values: {
             displayName: "",
@@ -101,6 +81,10 @@ const Register = () => {
             password: "",
           },
         });
+        if (isMounted()) {
+          router.push("/");
+          toast.success(`You are registered as ${user?.email}!`);
+        }
       } catch (error: any) {
         if (error.code === "auth/email-already-in-use") {
           toast.error("Cannot create user, email already in use");

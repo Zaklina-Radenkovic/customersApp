@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
@@ -9,26 +9,19 @@ import {
   Card,
   CardContent,
   Grid,
-  OutlinedInput,
   TextField,
   Typography,
 } from "@mui/material";
 import { UserCircle as UserCircleIcon } from "../../icons/user-circle";
-import { wait } from "../../utils/wait";
 import { updateCustomer } from "../../lib/firebase";
 import { useCustomerContext } from "../../context/CustomerContext";
 import { DeleteModal } from "../DeleteModal";
-import { useMounted } from "../../hooks/use-mounted";
 
 export const GeneralSettings = (props: any) => {
-  const isMounted = useMounted();
   const { user, setUser }: any = useCustomerContext();
-  console.log(user);
+
   const [isEditing, setIsEditing] = useState(false);
   const [modalIsVisible, setModalIsVisible] = useState(false);
-  // const [name, setName] = useState(user?.name || "");
-  // const [email, setEmail] = useState(user?.email);
-  // const [image, setImage] = useState(user?.photoURL);
 
   const handleEdit = () => {
     setIsEditing(!isEditing);
@@ -86,15 +79,9 @@ export const GeneralSettings = (props: any) => {
       const id = user.id;
       try {
         await updateCustomer(id, data);
-
-        await wait(500);
-        // if (isMounted()) {
         setUser(data);
-        // }
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
-
-        // console.log(user);
         toast.success("Customer updated!");
       } catch (err) {
         console.error(err);
@@ -179,7 +166,7 @@ export const GeneralSettings = (props: any) => {
                     onBlur={formik1.handleBlur}
                     onChange={formik1.handleChange}
                     error={Boolean(formik1.touched.name && formik1.errors.name)}
-                    // helperText={formik1.touched.name && formik1.errors.name}
+                    //  helperText={formik1.touched.name && formik1.errors.name}
                   />
                   <Button onClick={handleNameChange}>Save</Button>
                 </Box>

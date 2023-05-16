@@ -8,7 +8,6 @@ const Account = () => {
       <Head>
         <title>CustomersApp | Account</title>
       </Head>
-
       <Box
         component="main"
         sx={{

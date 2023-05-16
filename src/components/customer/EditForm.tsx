@@ -29,7 +29,6 @@ export const EditForm = (
 ) => {
   const router = useRouter();
 
-  // console.log(customer);
   const formik = useFormik({
     initialValues: {
       name: name || "",

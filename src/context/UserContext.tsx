@@ -10,7 +10,7 @@ import { User } from "firebase/auth";
 import {
   onAuthStateChangedListener,
   createUserDocumentFromAuth,
-  addCollectionAndDocuments,
+  auth,
 } from "../lib/firebase";
 import { CUSTOMERS_DATA } from "../_fake-api__/customers";
 
@@ -52,7 +52,6 @@ export const UserProvider = ({
       if (!user) return null;
       if (user) {
         // setIsLoading(true);
-
         createUserDocumentFromAuth(user);
       }
       setCurrentUser(user);

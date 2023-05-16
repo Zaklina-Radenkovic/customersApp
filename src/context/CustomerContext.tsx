@@ -1,9 +1,23 @@
-import { createContext, useState, useEffect, useContext } from "react";
-import { User } from "firebase/auth";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { doc, getDoc, getFirestore, DocumentData } from "firebase/firestore";
 import { useUserContext } from "./UserContext";
 
-export const CustomerContext = createContext({});
+interface iCustomerContext {
+  user: DocumentData | undefined | null;
+  setUser: Dispatch<SetStateAction<null | DocumentData>>;
+}
+
+export const CustomerContext = createContext<iCustomerContext>({
+  user: null,
+  setUser: () => null,
+});
 
 export const CustomerProvider = ({
   children,
@@ -11,26 +25,26 @@ export const CustomerProvider = ({
   children: JSX.Element[] | JSX.Element;
 }) => {
   const [user, setUser] = useState<DocumentData | undefined | null>(null);
-  const [isLogin, setIsLogin] = useState(false);
   const { currentUser, setIsLoading } = useUserContext();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
+      // setIsLoading(true);
       if (currentUser) {
-        // setIsLoading(true);
         const userRef = doc(getFirestore(), "customers", currentUser?.uid);
         const data = await getDoc(userRef);
+
         const userData = data.data();
         console.log(userData);
         setUser(userData);
       }
-      console.log(user);
       // setIsLoading(false);
     };
+
     fetchUserInfo();
   }, [currentUser]);
   return (
-    <CustomerContext.Provider value={{ user, setUser, isLogin, setIsLogin }}>
+    <CustomerContext.Provider value={{ user, setUser }}>
       {children}
     </CustomerContext.Provider>
   );
