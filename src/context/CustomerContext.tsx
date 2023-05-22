@@ -8,6 +8,7 @@ import {
 } from "react";
 import { doc, getDoc, getFirestore, DocumentData } from "firebase/firestore";
 import { useUserContext } from "./UserContext";
+import { updateProfile } from "firebase/auth";
 
 interface iCustomerContext {
   user: DocumentData | undefined | null;
@@ -33,16 +34,16 @@ export const CustomerProvider = ({
       if (currentUser) {
         const userRef = doc(getFirestore(), "customers", currentUser?.uid);
         const data = await getDoc(userRef);
+        const userData = data?.data();
 
-        const userData = data.data();
-        console.log(userData);
         setUser(userData);
+        console.log(userData);
       }
       // setIsLoading(false);
     };
-
     fetchUserInfo();
   }, [currentUser]);
+
   return (
     <CustomerContext.Provider value={{ user, setUser }}>
       {children}

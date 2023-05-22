@@ -20,6 +20,7 @@ import {
   createAuthUserWithEmailAndPassword,
 } from "../../src/lib/firebase";
 import { useMounted } from "../../src/hooks/use-mounted";
+import { updateProfile, reload } from "firebase/auth";
 
 const Register = () => {
   //isMounted returns fnc, isMounted() returns true/false
@@ -34,6 +35,7 @@ const Register = () => {
       //   we can destructure user from response
       const { user } = await signInWithGooglePopup();
       await createUserDocumentFromAuth(user);
+      await updateProfile(user, { displayName: user.displayName });
 
       // before performing an action
       if (isMounted()) {
@@ -71,6 +73,10 @@ const Register = () => {
           password
         );
         await createUserDocumentFromAuth(user, { name });
+
+        await updateProfile(user, { displayName: name });
+
+        toast.success(`Welcome ${name}`);
 
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);

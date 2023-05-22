@@ -16,6 +16,7 @@ import { Cog as CogIcon } from "../icons/cog";
 import { UserCircle as UserCircleIcon } from "../icons/user-circle";
 import { signOutUser } from "../lib/firebase";
 import { useCustomerContext } from "../context/CustomerContext";
+import { useUserContext } from "../context/UserContext";
 
 type AccountPopoverProp = {
   anchorEl: any;
@@ -31,13 +32,14 @@ export const AccountPopover = ({
 }: AccountPopoverProp) => {
   const router = useRouter();
   const { user, setUser }: any = useCustomerContext();
-
+  const { currentUser, setCurrentUser }: any = useUserContext();
   const handleLogout = async () => {
     try {
       onClose?.();
       await signOutUser();
 
       setUser(null);
+      setCurrentUser(null);
       router.push("/authentication/login").catch(console.error);
       toast.success("You are signed out");
     } catch (err) {
@@ -68,7 +70,7 @@ export const AccountPopover = ({
         }}
       >
         <Avatar
-          src={user?.photoURL}
+          src={currentUser?.photoURL}
           sx={{
             height: 40,
             width: 40,
@@ -81,7 +83,7 @@ export const AccountPopover = ({
             ml: 1,
           }}
         >
-          <Typography variant="body1"> {user?.name} </Typography>
+          <Typography variant="body1"> {currentUser?.displayName} </Typography>
         </Box>
       </Box>
       <Divider />

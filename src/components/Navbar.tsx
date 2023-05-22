@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 import {
   AppBar,
@@ -13,6 +13,7 @@ import { UserCircle as UserCircleIcon } from "../icons/user-circle";
 import { getInitials } from "../utils/getInitials";
 import { AccountPopover } from "./AccountPopover";
 import { useCustomerContext } from "../context/CustomerContext";
+import { useUserContext } from "../context/UserContext";
 
 const NavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -34,6 +35,7 @@ const AccountButton = () => {
   const [openPopover, setOpenPopover] = useState(false);
   const anchorRef = useRef(null);
   const { user }: any = useCustomerContext();
+  const { currentUser }: any = useUserContext();
 
   const handleOpenPopover = () => {
     setOpenPopover(true);
@@ -60,17 +62,12 @@ const AccountButton = () => {
             height: 40,
             width: 40,
           }}
-          src={user?.photoURL || user?.avatar || ""}
+          src={currentUser?.photoURL || currentUser?.avatar || ""}
         >
-          {/* TODO: when user is sign out how to remove photo */}
-          {/* {user === null || undefined ? (
+          {currentUser?.displayName === undefined && (
             <UserCircleIcon fontSize="small" />
-          ) : (
-            getInitials(user?.name)
-          )} */}
-
-          {!user && <UserCircleIcon fontSize="small" />}
-          {user && getInitials(user?.name)}
+          )}
+          {currentUser?.displayName && getInitials(currentUser?.displayName)}
         </Avatar>
       </Box>
       <AccountPopover

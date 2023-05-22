@@ -1,12 +1,12 @@
 import { Box, Button, Card, Typography } from "@mui/material";
-import { useCustomerContext } from "../context/CustomerContext";
+import { useUserContext } from "../context/UserContext";
 
 type OverviewBannerType = {
   onDismiss: () => void;
 };
 
 const Banner = ({ onDismiss, ...other }: OverviewBannerType) => {
-  const { user }: any = useCustomerContext();
+  const { currentUser }: any = useUserContext();
 
   return (
     <Card
@@ -25,8 +25,8 @@ const Banner = ({ onDismiss, ...other }: OverviewBannerType) => {
     >
       <div>
         <Typography color="inherit" sx={{ mt: 2 }} variant="h4">
-          {user?.name
-            ? `Welcome to CustomersApp, ${user?.name}!`
+          {currentUser?.displayName
+            ? `Welcome to CustomersApp, ${currentUser?.displayName}!`
             : `Welcome to CustomersApp!`}
         </Typography>
 
