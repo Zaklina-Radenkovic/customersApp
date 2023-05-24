@@ -2,7 +2,7 @@ import { Box, ListItem, ListItemText, Typography } from "@mui/material";
 
 type PropertyListItemProps = {
   align: string | string;
-  disableGutters: boolean;
+  disableGutters?: boolean | undefined;
   label: string;
   value: string | undefined;
   divider: boolean;

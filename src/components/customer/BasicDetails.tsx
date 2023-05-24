@@ -24,22 +24,9 @@ export const BasicDetails = ({
       <CardHeader title="Basic Details" />
       <Divider />
       <PropertyList>
+        <PropertyListItem align={align} divider label="Email" value={email} />
+        <PropertyListItem align={align} divider label="Phone" value={phone} />
         <PropertyListItem
-          disableGutters
-          align={align}
-          divider
-          label="Email"
-          value={email}
-        />
-        <PropertyListItem
-          disableGutters
-          align={align}
-          divider
-          label="Phone"
-          value={phone}
-        />
-        <PropertyListItem
-          disableGutters
           align={align}
           divider
           label="Address"

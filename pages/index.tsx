@@ -4,8 +4,11 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Box } from "@mui/material";
 import Banner from "../src/components/Banner";
+import Spinner from "../src/components/Spinner";
+import { useUserContext } from "../src/context/UserContext";
 
 const Home: NextPage = () => {
+  const { isLoading } = useUserContext();
   const [displayBanner, setDisplayBanner] = useState(true);
   const router = useRouter();
 
@@ -28,7 +31,8 @@ const Home: NextPage = () => {
           py: 8,
         }}
       >
-        {displayBanner && (
+        {isLoading && <Spinner />}
+        {!isLoading && displayBanner && (
           <Box sx={{ mx: 3, mb: 6 }}>
             <Banner onDismiss={handleDismissBanner} />
           </Box>

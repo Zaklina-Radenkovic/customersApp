@@ -17,6 +17,7 @@ import { collection, doc, getDocs, getDoc } from "firebase/firestore";
 import { db } from "../../../src/lib/firebase";
 import { getInitials } from "../../../src/utils/getInitials";
 import { BasicDetails } from "../../../src/components/customer/BasicDetails";
+import { GetStaticPropsContext } from "next";
 
 export interface iCustomerDetails {
   address: string;
@@ -149,12 +150,11 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps = async (context: any) => {
+export const getStaticProps = async (context: GetStaticPropsContext) => {
   // console.log(context);
-  let id = context?.params.customerId;
+  let id = context?.params?.customerId as string;
   const customerRef = doc(db, "customers", id);
   const customerSnap = await getDoc(customerRef);
-
   const customerData = customerSnap.data();
   const customerDetail = {
     ...customerData,

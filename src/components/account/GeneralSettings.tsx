@@ -12,16 +12,23 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { UserCircle as UserCircleIcon } from "../../icons/user-circle";
 import { updateCustomer } from "../../lib/firebase";
 import { useCustomerContext } from "../../context/CustomerContext";
 import { DeleteModal } from "../DeleteModal";
+import { useUserContext } from "../../context/UserContext";
 
 export const GeneralSettings = (props: any) => {
   const { user, setUser }: any = useCustomerContext();
-
+  const { currentUser, setCurrentUser }: any = useUserContext();
+  const [isUpdating, setIsUpdating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [modalIsVisible, setModalIsVisible] = useState(false);
+
+  function handleClick() {
+    setIsUpdating(true);
+  }
 
   const handleEdit = () => {
     setIsEditing(!isEditing);
@@ -78,10 +85,12 @@ export const GeneralSettings = (props: any) => {
       };
       const id = user.id;
       try {
+        setIsUpdating(true);
         await updateCustomer(id, data);
         setUser(data);
         helpers.setStatus({ success: true });
         helpers.setSubmitting(false);
+        setIsUpdating(false);
         toast.success("Customer updated!");
       } catch (err) {
         console.error(err);
@@ -210,14 +219,17 @@ export const GeneralSettings = (props: any) => {
                     {isEditing ? "Save" : "Edit"}
                   </Button>
                 </Box>
-                <Button
+
+                <LoadingButton
                   sx={{ mt: 4 }}
+                  loading={isUpdating ? true : false}
+                  type="submit"
                   variant="contained"
                   disabled={formik1.isSubmitting}
-                  type="submit"
                 >
-                  Update
-                </Button>
+                  {" "}
+                  <span>Update</span>
+                </LoadingButton>
               </form>
             </Grid>
           </Grid>

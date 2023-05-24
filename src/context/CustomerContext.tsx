@@ -30,7 +30,7 @@ export const CustomerProvider = ({
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      // setIsLoading(true);
+      setIsLoading(true);
       if (currentUser) {
         const userRef = doc(getFirestore(), "customers", currentUser?.uid);
         const data = await getDoc(userRef);
@@ -39,7 +39,7 @@ export const CustomerProvider = ({
         setUser(userData);
         console.log(userData);
       }
-      // setIsLoading(false);
+      setIsLoading(false);
     };
     fetchUserInfo();
   }, [currentUser]);

@@ -51,12 +51,12 @@ export const UserProvider = ({
     const unsubscribe = onAuthStateChangedListener((user: User | null) => {
       if (!user) return null;
       if (user) {
-        // setIsLoading(true);
+        setIsLoading(true);
         // createUserDocumentFromAuth(user);
         setCurrentUser(user);
       }
       // console.log(user);
-      // setIsLoading(false);
+      setIsLoading(false);
     });
     return unsubscribe;
   }, []);
